@@ -5,6 +5,7 @@ const controller = {};
 //Require Funciones
 const funcion = require('../public/js/controllerFunctions');
 const funcionE = require('../public/js/empleadosFunctions');
+const funcionA = require('../public/js/areasFunctions');
 
 // Index GET
 controller.index_GET = (req, res) => {
@@ -20,572 +21,567 @@ controller.crear_andon_GET = (req, res) => {
 //Login
 controller.login = (req, res) => {
     loginId = req.params.id
-    if (loginId == 'alta_escalamiento') {
-        funcionE.empleadosAccessAll(3, '=', (err, result) => {
 
+    if (loginId == "alta_supervisores") {
+        //Busca si el empleado tiene acceso tipo 2 que es admin y puede dar de alta supervisores
+        funcionE.empleadosAccessAll(2, '=', (err, result) => {
             res.render('login.ejs', {
-                data: loginId, data2: result
+                data: loginId,
+                data2: result
             });
-        });
-    } else
-        if (loginId == 'crear_andon') {
-            funcionE.empleadosAccessAll(1, '>=', (err, result) => {
-
-                res.render('login.ejs', {
-                    data: loginId, data2: result
-                });
+        })
+    } else if (loginId == "alta_empleados") {
+        //Busca si el empleado tiene acceso tipo 1 que es supervisor y puede dar de alta empleados igual los empleados con mayor acceso 
+        funcionE.empleadosAccessAll(1, '>=', (err, result) => {
+            res.render('login.ejs', {
+                data: loginId,
+                data2: result
             });
-        } else
-            if (loginId == 'cerrar_andon') {
-                funcionE.empleadosAccessAll(2, '>=', (err, result) => {
+        })
+    } else if (loginId == "captura") {
+        //Busca si el empleado tiene acceso tipo 2 que es admin y puede dar de alta supervisores
+        funcionE.empleadosAccessAll(1, '>=', (err, result) => {
+            res.render('login.ejs', {
+                data: loginId,
+                data2: result
+            });
+        })
+    }
+}
 
-                    res.render('login.ejs', {
-                        data: loginId, data2: result
-                    });
-                });
-            }
-};
+controller.alta_supervisores_POST = (req, res) => {
+    emp_id = req.body.user
+    funcionE.empleadosDiferenteDeOrigininador(emp_id, (err, result) => {
+        funcionE.empleadosAccessAll(1, '=', (err, result2) => {
+            res.render('alta_supervisores.ejs', {
+                data: emp_id,
+                data2: result,
+                data3: result2
+            })
+        })
+    })
+}
 
-//POST a crear_andon despues de login primero revisa si el Gafete existe 
-controller.crear_andon_POST = (req, res) => {
-    numeroEmpleado = req.body.user;
-
-    funcionE.empleadosNombre(numeroEmpleado, (err, result3) => {
+controller.alta_supervisor_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    funcionE.empleadosInsertAcceso(emp_id, (err, result) => {
         if (err) throw err;
-        funcion.controllerDepartamentos((err, result1) => {
+        funcionE.empleadosTodos((err, result) => {
             if (err) throw err;
-            funcion.controllerProblemas((err, result2) => {
+            funcionE.empleadosAccessAll(1, '=', (err, result2) => {
                 if (err) throw err;
+                res.render('alta_supervisores.ejs', {
+                    data: req.body.user,
+                    data2: result,
+                    data3: result2
+                })
+            })
+        })
+    })
 
-                res.render('crear_andon.ejs', {
-                    data: result1, data2: result2, data3: result3, data4: numeroEmpleado
-                });
-            });
-        });
-    });
+}
 
-};
-
-
-//POST a guardar_andon despues de crear andon2
-controller.guardar_andon_POST = (req, res) => {
-
-
-    empleado = (req.body.empleado)
-    gafete = (req.body.gafete)
-    departamento = (req.body.departamento)
-    problema = (req.body.problema)
-    descripcion = (req.body.descripcion)
-    clave = Math.floor(Math.random() * 10000);
-
-
-    funcion.controllerIdProblema(problema, (err, id_prob) => {
+controller.borrar_supervisor_POST = (req, res) => {
+    gafete = req.body.gafete
+    funcionE.supervisorBorrarAcceso(gafete, (err, result) => {
         if (err) throw err;
-
-        funcion.controllerIdDepartamento(departamento, (err, id_dep) => {
+        funcionE.empleadosTodos((err, empleados) => {
             if (err) throw err;
-
-            funcion.controllerInsertAndon(id_dep, id_prob, descripcion, gafete, clave, (err, result) => {
+            funcionE.empleadosAccessAll(1, '=', (err, result2) => {
                 if (err) throw err;
-
-                funcion.controllerMaxIdAndon((err, result2) => {
-                    id_andon = result2[0].id;
-                    if (err) throw err;
-
-                    res.render('guardar_andon.ejs', {
-                        data: { departamento, problema, descripcion, clave, id_andon }
-                    });
-                });
-            });
-        });
-    });
-
-
-
-
-    //Enviar Correos
-    funcion.controllerIdDepartamento(departamento, (err, id_depE) => {
-        if (err) throw err;
-        funcion.controllerMaxIdAndon((err, result5) => {
-            if (err) throw err;
-            id = result5[0].id + 1;
-            //Enviar Correo Empleados del Creador de andon
-            funcionE.empleadosCorreo(gafete, (err, correo) => {
-
-                to = correo;
-                cc = '';
-                subject = 'Nueva Andon: ' + id;
-                status = 'Abierta';
-                color = '#b30000';
-                id_andon = id;
-                creador = empleado;
-                gafete = gafete;
-                problema = problema;
-                descripcion = descripcion;
-                fecha = new Date();
-                eclave = clave;
-                empleadoAtendida = '';
-                fechaAtendida = '';
-                accionAtendida = '';
-                empleadoCerrada = '';
-                fechaCerrada = '';
-                accionCerrada = '';
-
-                dataEmail = {
-                    to, cc, subject, status, color, id_andon, creador, gafete, problema, descripcion, fecha, eclave, empleadoAtendida,
-                    fechaAtendida, accionAtendida, empleadoCerrada, fechaCerrada, accionCerrada
-                }
-
-                funcion.sendEmail(dataEmail);
-            });
-
-            //Enviar Correo Empleados del Departamento
-            funcionE.empleadosAccessAll(2,'=',(err, gafeteAcc) => {
-
-                for (var i = 0; i < gafeteAcc.length; i++) {
-
-                    funcionE.empleadosCorreoDep(gafeteAcc[i].acc_id, id_depE, (err, correo) => {
-
-                        if (correo != '') {
-
-
-                            to = correo[0].emp_correo;
-                            cc = '';
-                            subject = 'Nueva Andon: ' + id;
-                            status = 'Abierta';
-                            color = '#b30000';
-                            id_andon = id;
-                            creador = empleado;
-                            gafete = gafete;
-                            problema = problema;
-                            descripcion = descripcion;
-                            fecha = new Date();
-                            eclave = '';
-                            empleadoAtendida = '';
-                            fechaAtendida = '';
-                            accionAtendida = '';
-                            empleadoCerrada = '';
-                            fechaCerrada = '';
-                            accionCerrada = '';
-
-                            dataEmail = {
-                                to, cc, subject, status, color, id_andon, creador, gafete, problema, descripcion, fecha, eclave, empleadoAtendida,
-                                fechaAtendida, accionAtendida, empleadoCerrada, fechaCerrada, accionCerrada
-                            }
-
-                            funcion.sendEmail(dataEmail);
-
-                        }
-                    });
-                }
-            });
-        });
-    });
-
-
-};
-
-//Get tabla andons
-controller.andons_GET = (req, res) => {
-
-    funcion.controllerTablaAndon((err, result) => {
-        if (err) throw err;
-        funcion.controllerCountAndonAll('abiertas', "Abierta", (err, result2) => {
-            if (err) throw err;
-            funcion.controllerCountAndonAll('atendidas', "Atendida", (err, result3) => {
-                if (err) throw err;
-                funcion.controllerCountAndonAll('cerradas', "Cerrada", (err, result4) => {
-                    if (err) throw err;
-
-                    andonAbiertas = result2[0].abiertas
-                    andonAtendidas = result3[0].atendidas
-                    andonCerradas = result4[0].cerradas
-
-                    res.render('andons.ejs', {
-                        data: result, data2: { andonAbiertas, andonAtendidas, andonCerradas }
-                    });
-                });
-            });
-        });
-    });
-};
-
-//POST  a cerrar_andondespues de login, revisa primero si el Gafete existe
-controller.cerrar_andon_POST = (req, res) => {
-    numeroEmpleado = req.body.user;
-
-    funcionE.empleadosNombre(numeroEmpleado, (err, nombreEmpleado) => {
-        if (err) throw err;
-
-        funcion.controllerAndonAbiertas((err, result4) => {
-            if (err) throw err;
-
-
-            res.render('cerrar_andon.ejs', {
-                data: numeroEmpleado, data2: nombreEmpleado, data3: result4
-            });
-        });
-    });
-
-};
-
-//POST  cerrar_andon2 despues de cerrra_andon primero revisa si la andon existe
-controller.cerrar_andon2_POST = (req, res) => {
-
-    numeroEmpleado = req.body.numeroEmpleado;
-    nombreEmpleado = req.body.nombreEmpleado;
-    id_andon = req.body.id_andon;
-
-    funcion.controllerStatusAndon(id_andon, (err, result2) => {
-        if (err) throw err;
-        status = result2[0].status
-
-        funcion.controllerClaveAndon(id_andon, (err, clave) => {
-            if (err) throw err;
-            id_clave = clave[0].clave;
-
-            funcion.controllerProblemaAndon(id_andon, (err, result1) => {
-                if (err) throw err;
-                problema = result1[0].descripcion
-
-                res.render('cerrar_andon2.ejs', {
-                    data: { numeroEmpleado, nombreEmpleado, id_andon, problema, id_clave, status }
-                });
-            });
-        });
-    });
-
-};
-
-//POST a cambio_andon
-controller.cambio_andon_POST = (req, res) => {
-
-    accionTomada = req.params.id;
-    nombreEmpleado = req.body.nombreEmpleado;
-    numeroEmpleado = req.body.numeroEmpleado;
-    id_andon = req.body.id_andon;
-    current_date = req.body.current_date; //Fecha sin formato
-    formatted_current_date = req.body.formatted_current_date; //Fecha con formato YYYY-MM-DD hh:mm:ss
-    clave_cierre = req.body.clave_cierre;
-    problema = req.body.problema;
-    actividades = req.body.actividades;
-
-
-    db.query(`SELECT * FROM andon WHERE id_andon = ${id_andon}`, function (err, result, fields) {
-
-        andonFecha = result[0].fecha_inicio;
-        var startDate = new Date(andonFecha);//Fecha en que se creo la andon de trabajo
-        var endDate = new Date(current_date);//Fecha en la que se esta tendiendo la andon de trabajo, viene de cerrar_andon2(current_date)
-        var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
-        minutos = (seconds / 60);
-        var usuarioAtendida = result[0].usuario_atendida;
-        var accionAtendidaC = result[0].acciones_atendida;
-
-        //Info correo
-        reporto = result[0].reporto;
-        descripcion = result[0].descripcion_problema;
-        fechaAtendida = result[0].fecha_hora_atendida;
-        accionesAtendida = result[0].acciones_atendida;
-
-        funcionE.empleadosNombre(reporto, (err, nombrereporto) => {
-
-
-            //Si es de tipo correctivo actualiza segundos //////////////////////////////////////////////////////////
-
-            if (accionTomada == "Atendida") {
-
-                clave_cierre = '';
-                funcion.controllerUpdateAndonA(accionTomada, actividades, formatted_current_date, nombreEmpleado, id_andon, (err, result) => {
-                    if (err) throw err;
-
-                    res.render('cambio_andon.ejs', {
-                        data: { accionTomada, nombreEmpleado, numeroEmpleado, id_andon, formatted_current_date, clave_cierre, problema, actividades }
-                    });
-                });
-
-                gafeteEnviar = reporto;
-                for (var i = 0; i < 2; i++) {
-                    funcionE.empleadosCorreo(gafeteEnviar, (err, correo) => {
-
-                        to = correo;
-                        cc = '';
-                        subject = ' Andon: ' + id_andon + ' -Atendida-';
-                        status = 'Atendida';
-                        color = '#3498db';
-                        id_andon = id_andon;
-                        creador = nombrereporto;
-                        gafete = reporto;
-                        problema = problema;
-                        descripcion = descripcion;
-                        fecha = andonFecha;
-                        eclave = clave_cierre;
-                        empleadoAtendida = nombreEmpleado;
-                        fechaAtendida = formatted_current_date;
-                        accionAtendida = actividades;
-                        empleadoCerrada = '';
-                        fechaCerrada = '';
-                        accionCerrada = '';
-
-                        dataEmail = {
-                            to, cc, subject, status, color, id_andon, creador, gafete, problema, descripcion, fecha, eclave, empleadoAtendida,
-                            fechaAtendida, accionAtendida, empleadoCerrada, fechaCerrada, accionCerrada
-                        }
-
-                        funcion.sendEmail(dataEmail);
-                    })
-
-                    gafeteEnviar = numeroEmpleado;
-                }
-
-
-            } else {
-                funcion.controllerUpdateAndonC(accionTomada, actividades, formatted_current_date, minutos, nombreEmpleado, id_andon, (err, result) => {
-
-                    res.render('cambio_andon.ejs', {
-                        data: { accionTomada, nombreEmpleado, numeroEmpleado, id_andon, formatted_current_date, clave_cierre, problema, actividades }
-                    });
-                });
-
-                gafeteEnviar = reporto;
-                for (var i = 0; i < 2; i++) {
-                    funcionE.empleadosCorreo(gafeteEnviar, (err, correo) => {
-
-                        to = correo;
-                        cc = '';
-                        subject = 'Andon ' + id_andon + ' -Cerrada-';
-                        status = 'Cerrada';
-                        color = '#0e943b';
-                        id_andon = id_andon;
-                        creador = nombrereporto;
-                        gafete = reporto;
-                        problema = problema;
-                        descripcion = descripcion;
-                        fecha = andonFecha;
-                        eclave = clave_cierre;
-                        empleadoAtendida = usuarioAtendida;
-                        fechaAtendida = fechaAtendida;
-                        accionAtendida = accionAtendidaC;
-                        empleadoCerrada = nombreEmpleado;
-                        fechaCerrada = formatted_current_date;
-                        accionCerrada = actividades;
-
-                        dataEmail = {
-                            to, cc, subject, status, color, id_andon, creador, gafete, problema, descripcion, fecha, eclave, empleadoAtendida,
-                            fechaAtendida, accionAtendida, empleadoCerrada, fechaCerrada, accionCerrada
-                        }
-
-                        funcion.sendEmail(dataEmail);
-                    })
-
-                    gafeteEnviar = numeroEmpleado;
-                }
-
-            }
-        });
+                res.render('alta_supervisores.ejs', {
+                    data: req.body.user,
+                    data2: empleados,
+                    data3: result2
+                })
+            })
+        })
 
     })
-};
+}
 
-//POST a historial apra generar tabla, primero revisa si el gafete existe
-controller.historial_POST = (req, res) => {
-    numeroEmpleado = req.body.user;
+controller.alta_empleados_POST = (req, res) => {
+    emp_id_jefe = req.body.user
+    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                funcionA.areas((err, areas) => {
+                    funcionA.subareas((err, subareas) => {
+                        funcionA.estaciones((err, estaciones) => {
+                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                jefe = emp_id_jefe
+                                res.render('alta_empleados.ejs', {
+                                    jefe,
+                                    empleados,
+                                    empleadosPorJefe,
+                                    data4: nombreJefe,
+                                    data5: "hidden",
+                                    areas,
+                                    subareas,
+                                    estaciones,
+                                    areaPorEmpleado
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
 
-    funcion.controllerHisotrialAndon(numeroEmpleado, (err, result) => {
-        if (err) throw err;
+controller.verificar_jefe_POST = (req, res) => {
+    emp_id = req.params.id
+    emp_id_jefe = req.body.emp_id_jefe
+    funcionE.empleadosJefe(emp_id, (err, jefeId) => {
+        jefe = jefeId[0].emp_id_jefe
+        if (jefe == 0) {
+            funcionA.areas((err, areas) => {
+                res.render('alta_empleado_area.ejs', {
+                    emp_id,
+                    emp_id_jefe,
+                    areas
+                })
+            })
+        } else {
+            funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                    funcionE.empleadosNombre(jefe, (err, nombreJefe) => {
+                        funcionA.areas((err, areas) => {
+                            funcionA.subareas((err, subareas) => {
+                                funcionA.estaciones((err, estaciones) => {
+                                    funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
 
-        funcion.controllerHistorialAndonStatus('abiertas', "Abierta", numeroEmpleado, (err, result2) => {
-            if (err) throw err;
-
-            funcion.controllerHistorialAndonStatus('atendidas', "Atendida", numeroEmpleado, (err, result3) => {
-                if (err) throw err;
-
-                funcion.controllerHistorialAndonStatus('cerradas', "Cerrada", numeroEmpleado, (err, result4) => {
-                    if (err) throw err;
-
-                    andonAbiertas = result2[0].abiertas
-                    andonAtendidas = result3[0].atendidas
-                    andonCerradas = result4[0].cerradas
-
-
-                    res.render('historial.ejs', {
-                        data: result, data2: { andonAbiertas, andonAtendidas, andonCerradas }, data3: numeroEmpleado
-                    });
-                });
-            });
-        });
-    });
-
-};
-
-//POST A revisar andon
-controller.revisar_POST = (req, res) => {
-    id_andon = req.params.id
+                                        jefe = emp_id_jefe
 
 
-    funcion.controllerRevisarAndon(id_andon, (err, result) => {
-        if (err) throw err;
+                                        res.render('alta_empleados.ejs', {
+                                            jefe,
+                                            empleados,
+                                            empleadosPorJefe,
+                                            data4: nombreJefe,
+                                            data5: "null",
+                                            areas,
+                                            subareas,
+                                            estaciones,
+                                            areaPorEmpleado
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        }
+    })
 
-        numeroEmpleado = result[0].reporto;
-        problema = result[0].descripcion;
-        descripcionProblema = result[0].descripcion_problema;
-        creacionFecha = result[0].fecha_inicio; //Fecha sin formato
-        departamento = result[0].nombre;
-        nombrEncargado = result[0].usuario_atendida;
-        nombreCierre = result[0].usuario_cierre;
-        atendidaFecha = result[0].fecha_hora_atendida;
-        cierreFecha = result[0].fecha_hora_cierre;
-        accionAtendida = result[0].acciones_atendida;
-        accionCierre = result[0].acciones_cierre;
-        clave_cierre = result[0].clave;
-        andonStatus = result[0].status
+}
 
-        funcionE.empleadosNombre(numeroEmpleado, (err, nombreEmpleado) => {
-            if (err) throw err;
+controller.alta_empleado_turno_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    emp_id_jefe = req.body.emp_id_jefe
+    id_area = req.body.id_area
+    funcionA.turnos((err, turnos) => {        
+        
+        res.render('alta_empleado_turno.ejs', {
+            emp_id,
+            emp_id_jefe,
+            id_area,
+            turnos
+        })
+    })
 
-            res.render('revisar.ejs', {
-                data: { id_andon, descripcionProblema, accionAtendida, accionCierre, nombreEmpleado, departamento, numeroEmpleado, creacionFecha, cierreFecha, clave_cierre, problema, nombrEncargado, nombreCierre, atendidaFecha, andonStatus }
-            });
-        });
-    });
-};
+}
 
-// Dashboard GET
-controller.dashboard_GET = (req, res) => {
-    res.render('dashboard.ejs')
+controller.alta_empleado_subarea_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    emp_id_jefe = req.body.emp_id_jefe
+    id_area = req.body.id_area
+    id_turno = req.body.id_turno
+
+  
+    
+    funcionA.subareasPorArea(id_area, (err, subareas) => {
+        res.render('alta_empleado_subarea.ejs', {
+            emp_id,
+            emp_id_jefe,
+            id_area,
+            id_turno,
+            subareas
+        })
+    })
+
 }
 
 
-controller.dashboard_POST = (req, res) => {
+
+controller.alta_empleado_verificarEstacion_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    emp_id_jefe = req.body.emp_id_jefe
+    id_area = req.body.id_area
+    id_subarea = req.body.id_subarea
+    id_turno = req.body.id_turno
+
+    
 
 
-    selectedMonth = req.body.month_selected
-    selectedYear = req.body.year_selected
-    selectedDepartment = req.body.department_selected
+    funcionA.estacionesPorSubarea(id_subarea, (req, estaciones) => {
+        if (estaciones.length > 1) {
+            res.render('alta_empleado_estacion.ejs', {
+                emp_id,
+                emp_id_jefe,
+                id_area,
+                id_subarea,
+                id_turno,
+                estaciones
+            })
+        } else {
+            funcionE.empleadosNombre(emp_id, (err, nombreEmpleado) => {
+                funcionA.areas((err, areas) => {
+                    funcionA.subareas((err, subareas) => {
+                        funcionA.estaciones((err, estaciones) => {
+                            funcionA.turnos((err,turnos)=>{
+                                
+                               
+                                
+
+                            id_estacion = null
+                            res.render('alta_empleado_verificacion.ejs', {
+                                emp_id,
+                                emp_id_jefe,
+                                id_area,
+                                id_subarea,
+                                id_estacion,
+                                id_turno,
+                                turnos,
+                                areas,
+                                subareas,
+                                estaciones,
+                                nombreEmpleado
+                            })
+                            })
+                        })
+                    })
+                })
+            })
+        }
+    })
+}
+
+controller.alta_empleado_verificacion_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    emp_id_jefe = req.body.emp_id_jefe
+    id_area = req.body.id_area
+    id_subarea = req.body.id_subarea
+    id_estacion = req.body.id_estacion
+    id_turno = req.body.id_turno
 
 
-    funcion.controllerDashCount('abiertas', selectedMonth, selectedYear, selectedDepartment, "Abierta", (err, result2) => {
-        if (err) throw err;
+    
 
-        funcion.controllerDashCount('atendidas', selectedMonth, selectedYear, selectedDepartment, "Atendida", (err, result3) => {
+    funcionE.empleadosNombre(emp_id, (err, nombreEmpleado) => {
+        funcionA.areas((err, areas) => {
+            funcionA.subareas((err, subareas) => {
+                funcionA.estaciones((err, estaciones) => {
+                    funcionA.turnos((err,turnos)=>{
+                    res.render('alta_empleado_verificacion.ejs', {
+                        emp_id,
+                        emp_id_jefe,
+                        id_area,
+                        id_subarea,
+                        id_estacion,
+                        id_turno,
+                        areas,
+                        subareas,
+                        estaciones,
+                        turnos,
+                        nombreEmpleado
+                    })
+                    })
+                })
+            })
+        })
+    })
+}
+
+
+controller.alta_empleado_POST = (req, res) => {
+    emp_id = req.body.emp_id
+    emp_id_jefe = req.body.emp_id_jefe
+    id_area = req.body.id_area
+    id_subarea = req.body.id_subarea
+    id_estacion = req.body.id_estacion
+
+    // Si al dar de alta la estacion es nula entonces, se asigna valor 0 a la estacion
+    if (id_estacion == '') {
+        id_estacion = 0;
+
+        funcionE.empleadosUpdateSubordinado(emp_id, emp_id_jefe, (err, result) => {
             if (err) throw err;
 
-            funcion.controllerDashCount('cerradas', selectedMonth, selectedYear, selectedDepartment, "Cerrada", (err, result4) => {
-                if (err) throw err;
+            affectedRowTrue = result.affectedRows
 
-                funcion.controllerNombreDepartamento(selectedDepartment, (err, result5) => {
+            if (affectedRowTrue == 1) {
+
+                funcionE.empleadosInsertArea(emp_id, emp_id_jefe, id_area, id_subarea, id_estacion, (err, result) => {
+                    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                                funcionA.areas((err, areas) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                            jefe = emp_id_jefe
+                                            funcionA.estaciones((err, estaciones) => {
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "hidden",
+                                                    areas,
+                                                    subareas,
+                                                    estaciones,
+                                                    areaPorEmpleado
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            } else {
+                funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                    funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                        funcionE.empleadosJefe(emp_id, (err, result4) => {
+                            funcionE.empleadosNombre(result4[0].emp_id_jefe, (err, nombreJefe) => {
+
+                                funcionA.areas((err, areas) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionA.estaciones((err, estaciones) => {
+                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                                jefe = emp_id_jefe
+
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "null",
+                                                    areas,
+                                                    subareas,
+                                                    estaciones,
+                                                    areaPorEmpleado
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            }
+
+        })
+    } else {
+        funcionE.empleadosUpdateSubordinado(emp_id, emp_id_jefe, (err, result) => {
+            if (err) throw err;
+
+            affectedRowTrue = result.affectedRows
+
+            if (affectedRowTrue == 1) {
+
+                funcionE.empleadosInsertArea(emp_id, emp_id_jefe, id_area, id_subarea, id_estacion, (err, result) => {
+
+
+                    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                                funcionA.areas((err, areas) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                            jefe = emp_id_jefe
+
+                                            funcionA.estaciones((err, estaciones) => {
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "hidden",
+                                                    areas,
+                                                    subareas,
+                                                    estaciones,
+                                                    areaPorEmpleado
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            } else {
+                funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                    funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                        funcionE.empleadosJefe(emp_id, (err, result4) => {
+                            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                                funcionA.areas((err, areas) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionA.estaciones((err, estaciones) => {
+                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                                jefe = emp_id_jefe
+
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "null",
+                                                    areas,
+                                                    subareas,
+                                                    estaciones,
+                                                    areaPorEmpleado
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            }
+
+        })
+    }
+}
+
+controller.borrar_empleado_POST = (req, res) => {
+
+    emp_id = req.params.id
+
+    emp_id_jefe = req.body.emp_id_jefe
+
+    funcionE.empleadosBorrarJefe(emp_id, (err, result) => {
+
+        funcionE.empleadosBorrarAreaEmpleado(emp_id,(err, result) => {
+                    
+
+
+            if (err) throw err;
+            funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                    funcionE.empleadosJefe(emp_id_jefe, (err, result4) => {
+                        funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                            funcionA.areas((err, areas) => {
+                                funcionA.subareas((err, subareas) => {
+                                    funcionA.estaciones((err, estaciones) => {
+                                        funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                            jefe = emp_id_jefe
+
+                                            res.render('alta_empleados.ejs', {
+                                                jefe,
+                                                empleados,
+                                                empleadosPorJefe,
+                                                data4: nombreJefe,
+                                                data5: "hidden",
+                                                areas,
+                                                subareas,
+                                                estaciones,
+                                                areaPorEmpleado
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+
+}
+
+controller.captura_POST = (req, res) => {
+    emp_id_jefe = req.body.user
+
+    res.render('captura.ejs', {
+        data: emp_id_jefe
+    })
+}
+
+
+
+controller.captura2_POST = (req, res) => {
+    let emp_id_jefe = req.body.user
+    let cap_mes = req.body.cap_mes
+    let cap_año = req.body.cap_año
+
+
+    funcionE.empleadosPorJefe(emp_id_jefe, (err, result00) => {
+
+
+
+        funcion.capturaHistorial(emp_id_jefe, cap_año, cap_mes, (err, result01) => {
+
+
+
+
+            res.render('captura2.ejs', {
+                data: result00,
+                cap_año: cap_año,
+                cap_mes: cap_mes,
+                emp_id_jefe,
+                capturas: result01
+            })
+        })
+    })
+}
+
+
+controller.guardar_captura_POST = (req, res) => {
+    let select = req.body.select
+    let days = req.body.days
+    let cap_mes = req.body.cap_mes
+    let cap_año = req.body.cap_año
+    let emp_id_jefe = req.body.emp_id_jefe
+    for (let i = 0; i < select.length; i++) {
+        if (select[i] !== '') {
+
+            let posicion = (i / days)
+            let cap_dia = i - ((Math.floor(posicion)) * days) + 1;
+            let cap_captura = select[i]
+
+
+
+            if (req.body.gafete[(Math.floor(posicion))].length == 1) {
+                let emp_id = req.body.gafete
+                let cap_id = emp_id.concat(cap_año, cap_mes, cap_dia)
+                funcion.empleadosInsertCaptura(cap_id, emp_id, emp_id_jefe, cap_año, cap_mes, cap_dia, cap_captura, (err, result) => {
                     if (err) throw err;
 
-                    funcion.controllerDashSeleccion(selectedMonth, selectedYear, selectedDepartment, (err, result6) => {
-                        if (err) throw err;
+                })
+            } else {
+                let emp_id = req.body.gafete[(Math.floor(posicion))]
+                let cap_id = emp_id.concat(cap_año, cap_mes, cap_dia)
+                funcion.empleadosInsertCaptura(cap_id, emp_id, emp_id_jefe, cap_año, cap_mes, cap_dia, cap_captura, (err, result) => {
+                    if (err) throw err;
 
-                        andonAbiertas = result2[0].abiertas
-                        andonAtendidas = result3[0].atendidas
-                        andonCerradas = result4[0].cerradas
-                        andonDepartamento = result5[0].nombre
-                        andonSeleccion = result6
-
-                        res.render('dashboard_view.ejs', {
-                            data: { andonAbiertas, andonAtendidas, andonCerradas, andonDepartamento, andonSeleccion, selectedMonth, selectedYear }
-                        });
-                    });
-                });
-            });
-        });
-    });
-};
+                })
+            }
 
 
-//Alta_escalAmiento
-controller.alta_escalamiento_POST = (req, res) => {
-    numeroEmpleado = req.body.user;
-
-    funcionE.empleadosTodos((err, result) => {
-        if (err) throw err;
-
-        funcion.controllerEscalamientoAll((err, result2) => {
-            if (err) throw err;
-
-            res.render('alta_escalamiento.ejs', {
-                data: result, data2: result2
-            });
-        });
-    });
-
-};
-
-//Alta_escalamiento
-controller.alta_escalamiento2_POST = (req, res) => {
-    if (req.body.correo == '') {
-        correo = req.body.correo2;
-    } else {
-        correo = req.body.correo;
+        }
     }
 
-
-    funcion.controllerEscalamiento(correo, (err, result) => {
-        if (err) throw err;
-
-        res.render('alta_escalamiento2.ejs', {
-            data: correo, data2: result
-        });
-    });
-
-};
-
-controller.guardar_escalamiento_POST = (req, res) => {
-
-    correo = req.body.correo
-    dep1 = req.body.dep1
-    if (dep1 == undefined) {
-        dep1 = 0
-    }
-    dep2 = req.body.dep2
-    if (dep2 == undefined) {
-        dep2 = 0
-    }
-    dep3 = req.body.dep3
-    if (dep3 == undefined) {
-        dep3 = 0
-    }
-    dep4 = req.body.dep4
-    if (dep4 == undefined) {
-        dep4 = 0
-    }
-    dep5 = req.body.dep5
-    if (dep5 == undefined) {
-        dep5 = 0
-    }
-    esc1 = req.body.esc1
-    if (esc1 == undefined) {
-        esc1 = 0
-    }
-    esc2 = req.body.esc2
-    if (esc2 == undefined) {
-        esc2 = 0
-    }
-    esc3 = req.body.esc3
-    if (esc3 == undefined) {
-        esc3 = 0
-    }
-    esc4 = req.body.esc4
-    if (esc4 == undefined) {
-        esc4 = 0
-    }
-    esc5 = req.body.esc5
-    if (esc5 == undefined) {
-        esc5 = 0
-    }
-
-
-    funcion.controllerInsertEscalamiento(dep1, dep2, dep3, dep4, dep5, esc1, esc2, esc3, esc4, esc5, correo, (err, result) => {
-
-        res.redirect('/login/alta_escalamiento')
-    });
-
-
-
-
-};
+    res.render('guardar_captura.ejs');
+}
 
 
 

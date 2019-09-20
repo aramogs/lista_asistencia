@@ -1,0 +1,178 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+
+<div class="row container-fluid">
+    <div class="col-lg-12">
+
+        <!-- general form elements -->
+        <div class="box box-primary">
+
+
+            <!-- form start -->
+            <form method="POST">
+
+
+                <!-- Oculto para utilizar como req.body -->
+                <input type="hidden" id="emp_id_jefe" name="emp_id_jefe" value="<%=emp_id_jefe%>">
+                <input type="hidden" id="emp_id" name="emp_id" value="<%=emp_id%>">
+                <input type="hidden" id="id_area" name="id_area" value="<%=id_area%>">
+                <input type="hidden" id="id_subarea" name="id_subarea" value="<%=id_subarea%>">
+                <input type="hidden" id="id_estacion" name="id_estacion" value="<%=id_estacion%>">
+                <input type="hidden" id="id_turno" name="id_turno" value="<%=id_turno%>">
+                <!-- Oculto para utilizar como req.body -->
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <% if(id_estacion == null) {%>
+
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-4)">Empleado</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Area</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-2)">Truno</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Subarea</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Verificacion</li>
+
+                        <% }else{ %>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-5)">Empleado</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-4)">Area</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Turno</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-2)">Subarea</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Estacion</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Verificacion</li>
+                        <% } %>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+
+                <div class="jumbotron jumbotron-fluid animated pulse">
+
+                    <div class="container text-center">
+                        <img src="/img/TristoneLogo.png" alt="">
+                        <h1 class="display-3 text-center">Verificar Empleado</h1>
+                        <hr>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <!-- Card -->
+                            <div class="col-lg-4 mt-4 grow">
+                                <div style="animation-delay: .15s" class="card text-center animated bounceIn shadow-lg">
+                                    <div class="card border-info text-info p-2" ><span class="fa fa-user-tie" aria-hidden="true"></span>
+                                        <h4>Empleado</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5><%= emp_id %> <%= nombreEmpleado %></h5>
+                                        </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Card -->
+
+
+                            <!-- Card -->
+                            <div class="col-lg-2 mt-4 grow">
+                                <div style="animation-delay: .30s" class="card text-center animated bounceIn shadow-lg">
+                                    <div class="card border-info text-info p-2" ><span class="fa fa-warehouse" aria-hidden="true"></span>
+                                        <h4>Area</h4>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <%  for(let i = 0; i < areas.length; i++){   %>
+                                        <% if(id_area == areas[i].id_area){ %>
+                                        <h5><%= areas[i].area%></h5>
+
+                                        <% } %>
+                                        <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Card -->
+                            <!-- Card -->
+                            <div class="col-lg-2 mt-4 grow">
+                                <div style="animation-delay: .30s" class="card text-center animated bounceIn shadow-lg">
+                                    <div class="card border-info text-info p-2" ><span class="fa fa-clock" aria-hidden="true"></span>
+                                        <h4>Turno</h4>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <%  for(let i = 0; i < turnos.length; i++){   %>
+                                        <% if(id_turno == turnos[i].id_turno){ %>
+                                            <% console.log(turnos) %>
+                                        <h5><%= turnos[i].turno_descripcion%></h5>
+
+                                        <% } %>
+                                        <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Card -->
+                            <!-- Card -->
+                            <div class="col-lg-2 mt-4 grow">
+                                <div style="animation-delay: .45s" class="card text-center animated bounceIn shadow-lg">
+                                    <div class="card border-info text-info p-2" ><span class="fa fa-pallet" aria-hidden="true"></span>
+                                        <h4>Subarea</h4>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <%  for(let i = 0; i < subareas.length; i++){   %>
+                                        <% if(id_subarea == subareas[i].id_subarea){ %>
+                                        <h5><%= subareas[i].subarea%></h5>
+
+                                        <% } %>
+                                        <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Card -->
+                            <% if(id_estacion !== null) {%>
+                            <!-- Card -->
+                            <div class="col-lg-2 mt-4 grow">
+                                <div style="animation-delay: .60s" class="card text-center animated bounceIn shadow-lg">
+                                    <div class="card border-info text-info p-2" ><span class="fa fa-boxes" aria-hidden="true"></span>
+                                        <h4>Estacion</h4>
+                                    </div>
+                                    <div class="card-body">
+
+                                        <%  for(let i = 0; i < estaciones.length; i++){   %>
+                                        <% if(id_estacion == estaciones[i].id_estacion){ %>
+                                        <h5><%= estaciones[i].estacion%></h5>
+
+                                        <% } %>
+                                        <% } %>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Card -->
+                            <% } %>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 text-center mt-4 animated bounceIn delay-1 ">
+                                <button type="submit" class="btn btn-lg btn-success btn-block"
+                                    formaction="/alta_empleado">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+
+            </form>
+
+            </iv>
+        </div>
+    </div>
+
+    <% include ./static/footer %>
+
+    </body>
+
+    </html>

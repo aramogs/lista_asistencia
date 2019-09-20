@@ -1,0 +1,80 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+
+<div class="row container-fluid">
+    <div class="col-lg-12">
+
+        <!-- general form elements -->
+        <div class="box box-primary">
+
+
+            <!-- form start -->
+            <form method="POST">
+
+
+                <!-- Oculto para utilizar como req.body -->
+                <input type="hidden" id="emp_id_jefe" name="emp_id_jefe" value="<%=emp_id_jefe%>">
+                <input type="hidden" id="emp_id" name="emp_id" value="<%=emp_id%>">
+                <input type="hidden" id="id_area" name="id_area" value="<%=id_area%>">
+                <input type="hidden" id="id_subarea" name="id_subarea" value="<%=id_subarea%>">
+                <input type="hidden" id="id_turno" name="id_turno" value="<%=id_turno%>">
+                <!-- Oculto para utilizar como req.body -->
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-4)">Empleado</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Area</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-2)">Turno</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Subarea</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Estacion</li>
+                    </ol>
+                </nav>
+                <!-- /Breadcrumb -->
+
+                <div class="jumbotron jumbotron-fluid animated pulse">
+
+                    <div class="container text-center">
+                        <img src="/img/TristoneLogo.png" alt="">
+                        <h1 class="display-3 text-center">Seleccionar Subarea</h1>
+                        <hr>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <%if(estaciones) { %>
+                            <% for (let i = 0; i < estaciones.length; i++) { %>
+                            <!-- Card -->
+                            <div class="col-lg-3 mt-4 grow">
+                                    <div style="animation-delay: <%=i*.15%>s" class="card text-center animated bounceIn" >
+                                    <div class="card-header ">
+                                        <h4 ><%= estaciones[i].estacion%></h4>
+                                    </div>
+                                    <div class="card-body">   
+                                                      <button type="submit" class="btn btn-block btn-outline-info" name="id_estacion"  formaction="/alta_empleado_verificacion" value="<%= estaciones[i].id_estacion%>" >Seleccionar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- /Card -->
+
+                            <% } %>
+                            <% } %>
+                        </div>
+
+
+                    </div>
+
+
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<% include ./static/footer %>
+
+</body>
+
+</html>

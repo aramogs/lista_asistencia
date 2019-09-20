@@ -6,20 +6,22 @@ const routesController = require('./routesController')
 
 router.get('/', routesController.index_GET);
 router.get('/login/:id', routesController.login);
-router.get('/crear_andon/login', routesController.crear_andon_GET);
-router.post('/crear_andon', routesController.crear_andon_POST);
-router.post('/guardar_andon', routesController.guardar_andon_POST);
-router.get('/andons', routesController.andons_GET);
-router.post('/cerrar_andon', routesController.cerrar_andon_POST);
-router.post('/cerrar_andon2', routesController.cerrar_andon2_POST);
-router.post('/cambio_andon/:id', routesController.cambio_andon_POST);
-router.post('/historial', routesController.historial_POST);
-router.post('/revisar/:id', routesController.revisar_POST);
-router.get('/dashboard', routesController.dashboard_GET);
-router.post('/dashboard_view', routesController.dashboard_POST);
-router.post('/alta_escalamiento', routesController.alta_escalamiento_POST);
-router.post('/alta_escalamiento2', routesController.alta_escalamiento2_POST);
-router.post('/guardar_escalamiento', routesController.guardar_escalamiento_POST);
+router.post('/alta_supervisores', routesController.alta_supervisores_POST);
+router.post('/alta_supervisor', routesController.alta_supervisor_POST);
+router.post('/borrar_supervisor', routesController.borrar_supervisor_POST);
+router.post('/alta_empleados', routesController.alta_empleados_POST);
+router.post('/borrar_empleado/:id', routesController.borrar_empleado_POST);
+router.post('/captura', routesController.captura_POST);
+router.post('/captura2', routesController.captura2_POST);
+router.post('/guardar_captura', routesController.guardar_captura_POST);
+router.post('/verificar_jefe/:id', routesController.verificar_jefe_POST);
+router.post('/alta_empleado_turno', routesController.alta_empleado_turno_POST);
+router.post('/alta_empleado_subarea', routesController.alta_empleado_subarea_POST);
+router.post('/alta_empleado_verificarEstacion', routesController.alta_empleado_verificarEstacion_POST);
+// router.post('/alta_empleado_estacion', routesController.alta_empleado_estacion_POST);
+router.post('/alta_empleado_verificacion', routesController.alta_empleado_verificacion_POST);
+router.post('/alta_empleado', routesController.alta_empleado_POST);
+// router.post('/guardar_escalamiento', routesController.guardar_escalamiento_POST);
 
 router.get('*', (req, res) => {
   res.send('404 Page not found');

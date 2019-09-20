@@ -82,3 +82,37 @@ img {
 div#danger-alert {
   display: none;
 }
+
+
+.table td  {
+padding: 0;
+
+}
+
+.td-name{
+  font-size: 80%
+}
+
+.select-captura{
+  font-size: 80%
+}
+
+.redText {
+  background-color:#F00;
+}
+.greenText {
+  background-color:#0F0;
+}
+.blueText {
+  background-color:#00F;
+}
+
+.grow:hover
+{
+        transition-duration: 1s;
+        -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1);
+
+}
+
