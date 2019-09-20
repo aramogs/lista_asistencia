@@ -16,8 +16,8 @@
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "datatables": "^1.10.18",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
     "express-mailer": "^0.3.1",
     "jquery": "^3.4.1",
     "jspdf": "^1.5.3",
@@ -27,7 +27,7 @@
     "popper.js": "^1.15.0"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.9.0",
-    "nodemon": "^1.19.0"
+    "@fortawesome/fontawesome-free": "^5.11.1",
+    "nodemon": "^1.19.2"
   }
 }
