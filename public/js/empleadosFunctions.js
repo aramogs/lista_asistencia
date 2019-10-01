@@ -158,6 +158,35 @@ funcionE.empleadosInsertArea = (id_emp, emp_id_jefe,id_area,id_subarea,id_estaci
         })
 }
 
+funcionE.SearchempleadoArea = (emp_id, callback) => {
+    dbE.query(`SELECT * FROM del_emparea WHERE id_emp = ${emp_id}`, function (err, result, fields) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
+funcionE.empleadosInsertHistorial = (his_movimiento,emp_id_jefe, emp_id, id_turno,id_area,id_subarea,id_estacion, callback) => {
+
+    dbE.query(`
+    INSERT INTO del_historial_movimientos (his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion,fecha_captura)
+    VALUES('${his_movimiento}', ${emp_id_jefe}, ${emp_id}, ${id_turno}, ${id_area},${id_subarea},${id_estacion},NOW()) 
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+
 funcionE.empleadosSearchArea = (id_emp, callback) => {
 
     dbE.query(`

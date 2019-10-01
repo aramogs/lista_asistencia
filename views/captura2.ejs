@@ -2,50 +2,88 @@
 <% include ./static/sidebar %>
 <% include ./static/navbar %>
 <form method="POST" action="/guardar_captura">
-<div class="col-xl-12 jumbotron jumbotron-fluid">
-    
-    <div class="container">
-        <img src="/img/TristoneLogo.png" class="rounded mx-auto d-block animated bounceInDown" alt="Tristone Flowtech">
-        <p class="text-center animated bounceInDown" display: inline-block>Captura de asistencia por supervisor</p>
-        <div class="alert alert-light text-center" role="alert">
-            <strong>2019</strong> Mes de Julio
+    <div class="col-xl-12 jumbotron jumbotron-fluid">
+
+        <div class="container">
+            <img src="/img/TristoneLogo.png" class="rounded mx-auto d-block animated bounceInDown"
+                alt="Tristone Flowtech">
+            <p class="text-center animated bounceInDown" display: inline-block>Captura de asistencia por supervisor</p>
+            <div class="alert alert-light text-center" role="alert">
+
+
+
+                <%   let d = new Date();         %>
+                <%   let n = cap_mes      %>
+                <%   let y = cap_año        %>
+                <%   let days = new Date(y,n,0).getDate();%>
+
+                <%const nombreMes = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"] %>
+
+                <%   function diaSemana(dia,mes,anio){
+                        var dias=["D", "L", "M", "M", "J", "V", "S"];
+                        var dt = new Date(mes+' '+dia+', '+anio+' 12:00:00');
+                        return dias[dt.getUTCDay()];    
+                    }
+
+                    %>
+
+
+                <strong><%=y%></strong> Mes de <%= nombreMes[n-1] %>
+            </div>
+            <button type="submit"
+                class="btn btn-outline-success btn-lg btn-block animated pulse slow infinite">Guardar</button>
+
+            <div class="row ">
+                <div class="col-lg-4 mt-4">
+                    <div class="alert alert-light" role="alert">
+                        <p><span class="badge badge-info">A</span> - Asistencia</p>
+                        <p><span class="badge badge-info">R</span> - Retardo</p>
+                        <p><span class="badge badge-info">V</span> - Vacaciones</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4">
+                    <div class="alert alert-light" role="alert">
+                        <p><span class="badge badge-info">PC</span> - Permiso con goce de sueldo</p>
+                        <p><span class="badge badge-info">PS</span> - Permiso sin goce de sueldo</p>
+                        <p><span class="badge badge-info">F</span> - Falta</p>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4">
+                    <div class="alert alert-light" role="alert">
+                        <p><span class="badge badge-info">I</span> - Incapacidad</p>
+                        <p><span class="badge badge-info">C</span> - Convenio</p>
+                        <p><span class="badge badge-info">S</span> - Suspension</p>
+
+                    </div>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-info btn-lg btn-block">Guardar</button>
+
+
+
     </div>
-</div>
-
-<!-- Hidden Month and Year Values -->
-<input class="form-control" type="text" value="<%=cap_mes%>" name="cap_mes" hidden>
-<input class="form-control" type="text" value="<%=cap_año%>" name="cap_año" hidden>
-<input class="form-control" type="text" value="<%=emp_id_jefe%>" name="emp_id_jefe" hidden>
 
 
-<div class="container col-xl-12 table-captura">
+    <!-- Hidden Month and Year Values -->
+    <input class="form-control" type="text" value="<%=cap_mes%>" name="cap_mes" hidden>
+    <input class="form-control" type="text" value="<%=cap_año%>" name="cap_año" hidden>
+    <input class="form-control" type="text" value="<%=emp_id_jefe%>" name="emp_id_jefe" hidden>
+
+
+    <div class="container col-xl-12 table-captura">
         <div class="table-responsive">
             <table class="table table-hover table-striped table-captura">
                 <thead class="thead-dark">
                     <tr>
                         <th>Gafete</th>
                         <th>Nombre</th>
-                        <%   let d = new Date();         %>
-                        <%   let n = cap_mes      %>
-                        <%   let y = cap_año        %>
-                        <%   let days = new Date(y,n,0).getDate();%>
-
-                        <%   function diaSemana(dia,mes,anio){
-                            var dias=["D", "L", "M", "M", "J", "V", "S"];
-                            var dt = new Date(mes+' '+dia+', '+anio+' 12:00:00');
-                            return dias[dt.getUTCDay()];    
-                        }
-
-                        %>
-
                         <!-- Post dias -->
                         <input type="hidden" name="days" value="<%= days %>">
                         <% for (let i = 0; i < days; i++) { %>
                         <th>
-                            <h20 ><%= diaSemana(i+1,n,y) %></label>
-                            <h20> <%= i+1%></h20> 
+                            <h20><%= diaSemana(i+1,n,y) %></label>
+                                <h20> <%= i+1%></h20>
                         </th>
                         <% } %>
                     </tr>
@@ -55,58 +93,64 @@
                     <% for (let i = 0; i < data.length; i++) { %>
                     <tr>
                         <td>
-                            <label ><%= data[i].emp_id %>    
-                            <input type="hidden" name="gafete" value="<%= data[i].emp_id %>">
+                            <label><%= data[i].emp_id %>
+                                <input type="hidden" name="gafete" value="<%= data[i].emp_id %>">
                         </td>
 
                         <td class="td-name"><%= data[i].emp_nombre %></td>
 
-                  
+
                         <% let existe=false; %>
                         <% let dia %>
                         <% let captura %>
-                            <% for (let x = 0; x < days; x++) { %>
-                                <% existe=false; %>
-                                <% dia=0 %>
-                                <% for (let y = 0; y < capturas.length; y++) { %>
-                                   
-                                    <%  if(x+1 == capturas[y].cap_dia && data[i].emp_id == capturas[y].emp_id){ %>
-                                        <%  dia=capturas[y].cap_dia%>
-                                        <%  captura=capturas[y].cap_captura%>
-                                        <% existe = true;%>
-                                        <% break%>
-                                 <% } %>
-                                <% } %>
-                                <%  if(existe == true){ %>
+                        <% for (let x = 0; x < days; x++) { %>
+                        <% existe=false; %>
+                        <% dia=0 %>
+                        <% for (let y = 0; y < capturas.length; y++) { %>
 
-                                
-                                    <td>
-                                        <select class="select-captura" name="select" >
-                                                <option  selected value =""><%= captura %></option>
-                                                <option>A</option>
-                                                <option>E</option>
-                                                <option>Ps</option>
-                                                <option>G</option>
-                                                <option>V</option>
-                                                <option>IN</option>
-                                            </select>
-                                </td>
+                        <%  if(x+1 == capturas[y].cap_dia && data[i].emp_id == capturas[y].emp_id){ %>
+                        <%  dia=capturas[y].cap_dia%>
+                        <%  captura=capturas[y].cap_captura%>
+                        <% existe = true;%>
+                        <% break%>
+                        <% } %>
+                        <% } %>
+                        <%  if(existe == true){ %>
 
-                                    <% }else{ %>
-                                       
 
-                                        <td>
-                                            <select class="select-captura" name="select" >
-                                                    <option  selected value =""></option>
-                                                    <option>A</option>
-                                                    <option>E</option>
-                                                    <option>Ps</option>
-                                                    <option>G</option>
-                                                    <option>V</option>
-                                                    <option>IN</option>
-                                                </select>
-                                    </td>
-                                        <% } %>
+                        <td>
+                            <select class="select-captura" name="select">
+                                <option selected value=""><%= captura %></option>
+                                <option>A</option>
+                                <option>R</option>
+                                <option>V</option>
+                                <option>PC</option>
+                                <option>PS</option>
+                                <option>F</option>
+                                <option>I</option>
+                                <option>C</option>
+                                <option>S</option>
+                            </select>
+                        </td>
+
+                        <% }else{ %>
+
+
+                        <td>
+                            <select class="select-captura" name="select">
+                                <option selected value=""></option>
+                                <option>A</option>
+                                <option>R</option>
+                                <option>V</option>
+                                <option>PC</option>
+                                <option>PS</option>
+                                <option>F</option>
+                                <option>I</option>
+                                <option>C</option>
+                                <option>S</option>
+                            </select>
+                        </td>
+                        <% } %>
                         <% } %>
                         <% } %>
                     </tr>
@@ -115,11 +159,11 @@
                 </tbody>
             </table>
         </div>
-    </form>  
-</>
+</form>
 
 
 <% include ./static/footer %>
 </body>
 
 </html>
+

@@ -3,10 +3,21 @@
         <div class="sidebar-heading bg-secondary text-white" ><span><img src="/img/icon.png" style="width: 25px"  alt=""></span> Tristone Flowtech </div>
         <div class="list-group list-group-flush">
           <a href="/" class="list-group-item list-group-item-action bg-light"><span class="text-info fas fa-tachometer-alt"></span>  Dashboard</a>
-          <a href="/login/captura" class="list-group-item list-group-item-action bg-light"><span class="text-info fas fa-file"></span> Captura</a>
+          <ul class="list-group">
+            <li class="list-group_item">
+              <a href="#" class="list-group-item list-group-item-action bg-light" id="click_hide_show"><span class="text-info fas fa-angle-right"></span><span class="text-info fas fa-table"></span> Captura</a>
+              <ul>
+                <a href="/login/captura_diaria" class="list-group-item list-group-item-action bg-light hide_show" ><span class="text-info fas fa-angle-double-right"></span><span class="text-info fas fa-calendar-day"></span>  Captura Diaria</a>
+                <a href="/login/captura" class="list-group-item list-group-item-action bg-light hide_show"><span class="text-info fas fa-angle-double-right"></span><span class="text-info fas fa-calendar-alt"></span> Captura Mensual</a>
+                </ul>
+              </li>
+          </ul>
           <a href="#" class="list-group-item list-group-item-action bg-light"><span class="text-info fas fa-chart-line"></span> Reportes</a>
           <a href="http://10.56.99.21:9675/portal/portal-login" target="_blank" class="list-group-item list-group-item-action bg-light"><span class="text-info fas fa-ticket-alt"></span> Soporte</a>
           
+
+
+
         </div>
       </div>
       <!-- /#sidebar-wrapper -->

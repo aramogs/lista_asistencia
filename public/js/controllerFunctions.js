@@ -18,7 +18,6 @@ funcion.empleadosInsertCaptura = (cap_id,emp_id, emp_id_jefe,cap_año,cap_mes,ca
     `,
     function (err, result, fields) {
         if (err) {
-            console.log(err);
             
             callback(err, null);
 
@@ -28,6 +27,27 @@ funcion.empleadosInsertCaptura = (cap_id,emp_id, emp_id_jefe,cap_año,cap_mes,ca
         }
     })
 }
+funcion.empleadosActualizarJefeCambiar = (emp_id_jefe,callback)=>{
+    db.query(`UPDATE captura SET emp_id_jefe = ${emp_id_jefe} WHERE emp_id = ${emp_id} `, function (err, result, fields) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
+funcion.empleadosActualizarJefeBorrar = (emp_id,callback)=>{
+    db.query(`UPDATE captura SET emp_id_jefe = 0 WHERE emp_id = ${emp_id} `, function (err, result, fields) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
+
 
 funcion.capturaHistorial = (emp_id_jefe,cap_año,cap_mes,callback)=>{
     db.query(`
@@ -48,5 +68,34 @@ funcion.capturaHistorial = (emp_id_jefe,cap_año,cap_mes,callback)=>{
     })
 }
 
+
+funcion.verificarMotivoFalta = (emp_id_jefe,cap_año,cap_mes,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE emp_id_jefe = ${emp_id_jefe}
+    AND cap_captura = "F"
+    AND motivo_falta IS NULL
+     `,
+    function (err, result, fields) {
+        if (err) {
+
+            
+            callback(err, null);
+
+        } else {
+
+            callback(null, result);
+        }
+    })
+}
+
+funcion.InsertarMotivoFalta = (motivo_falta, cap_id,callback)=>{
+    db.query(`UPDATE captura SET motivo_falta = "${motivo_falta}" WHERE cap_id = ${cap_id} `, function (err, result, fields) {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
 
 module.exports = funcion;

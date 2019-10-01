@@ -1,0 +1,72 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+
+<div class="col-xl-12 jumbotron jumbotron-fluid animated bounceInDown">
+    <div class="container">
+        <img src="/img/TristoneLogo.png" class="rounded mx-auto d-block" alt="Tristone Flowtech">
+        <h1 class="display-4 text-center">Motivos de Faltas</h1>
+        <p class="lead text-center">Capturar motivos de faltas</p>
+
+        <form method="POST" action="/captura_motivo_faltas">
+            
+    <!-- Hidden Month and Year Values -->
+    <input class="form-control" type="text" value="<%=cap_mes%>" name="cap_mes" hidden>
+    <input class="form-control" type="text" value="<%=cap_año%>" name="cap_año" hidden>
+    <input class="form-control" type="text" value="<%=emp_id_jefe%>" name="emp_id_jefe" hidden>
+
+            <div class="card bg-light  ">
+                  <button class="btn btn-outline-primary btn-lg btn-block animated pulse slow infinite">Guardar</button>
+                <div class="card-body">
+
+                    <table class="table table-sm table-borderless ">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>No. Empleado</th>
+                                <th>Nombre</th>
+                                <th>Año</th>
+                                <th>Mes</th>
+                                <th>Dia</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <% for (let i = 0; i< motivoFalta.length; i++){ %>
+
+                            <tr class="text-center">
+                                <td class="align-middle"> <%= motivoFalta[i].emp_id %> </td>
+
+
+                                <%  for(let y = 0; y < empleados.length; y++){  %>
+                                <% if(motivoFalta[i].emp_id == empleados[y].emp_id){ %>
+                                <td class="align-middle"> <%= empleados[y].emp_nombre  %> </td>
+
+                                <%}%>
+                        <%}%>
+
+                                <td class="align-middle"><%=motivoFalta[i].cap_año%></td>
+                                <td class="align-middle"><%=motivoFalta[i].cap_mes%></td>
+                                <td class="align-middle"><%=motivoFalta[i].cap_dia%></td>
+                                <td class="align-middle">
+                                    <div class="form-group">
+                                        <input  type="text" class="form-control" name="cap_id" id="cap_id" aria-describedby="helpId" value="<%= motivoFalta[i].cap_id %>" hidden>
+                                        <input  type="text" class="form-control" name="motivo_falta" id="motivo_falta" aria-describedby="helpId" placeholder="Descripcion de la falta" required>
+                                    </div>
+                                </td>
+                            </tr>
+                            <%}%>
+            </tbody>
+        </table>
+    </form>
+    </div>
+</div>
+    </div>
+</div>
+<script>
+
+</script>
+<% include ./static/footer %>
+                            </body>
+
+                            </html>

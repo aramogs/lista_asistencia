@@ -1,0 +1,136 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+<div class="container-fluid">
+    <form method="POST" action="/guardar_captura_diaria">
+
+
+
+        <div class="col-xl-12 jumbotron jumbotron-fluid">
+
+            <div class="container">
+                <img src="/img/TristoneLogo.png" class="rounded mx-auto d-block animated bounceInDown"
+                    alt="Tristone Flowtech">
+                <p class="text-center animated bounceInDown" display: inline-block>Captura de asistencia diaria por
+                    supervisor</p>
+                <div class="alert alert-light text-center" role="alert">
+
+
+
+                    <%   let d = new Date();   %>
+                    <%   let n = d.getMonth()+1  %>
+                    <%   let y = d.getFullYear()   %>
+                    <%   let day = d.getDate()  %>
+
+                    <%const nombreMes = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"] %>
+
+                    <%   function diaSemana(dia,mes,anio){
+                        var dias=["Domingo", "Lunes", "Martes", "Miercoles", "Juevez", "Viernes", "Sabado"];
+                        var dt = new Date(mes+' '+dia+', '+anio+' 12:00:00');
+                        return dias[dt.getUTCDay()];    
+                    }
+
+                    %>
+
+
+                    <strong><%= diaSemana(day,n,y) %> <%= day%> de <%= nombreMes[n-1] %> <%=y%></strong>
+                </div>
+                <button type="submit"
+                    class="btn btn-outline-success btn-lg btn-block animated pulse slow infinite">Guardar</button>
+                <div class="row ">
+                    <div class="col-lg-4 mt-4">
+                        <div class="alert alert-light" role="alert">
+                            <p><span class="badge badge-info">A</span> - Asistencia</p>
+                            <p><span class="badge badge-info">R</span> - Retardo</p>
+                            <p><span class="badge badge-info">V</span> - Vacaciones</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <div class="alert alert-light" role="alert">
+                            <p><span class="badge badge-info">PC</span> - Permiso con goce de sueldo</p>
+                            <p><span class="badge badge-info">PS</span> - Permiso sin goce de sueldo</p>
+                            <p><span class="badge badge-info">F</span> - Falta</p>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-4">
+                        <div class="alert alert-light" role="alert">
+                            <p><span class="badge badge-info">I</span> - Incapacidad</p>
+                            <p><span class="badge badge-info">C</span> - Convenio</p>
+                            <p><span class="badge badge-info">S</span> - Suspension</p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Hidden Month and Year Values -->
+        <input class="form-control" type="text" value="<%=day%>" name="cap_dia" hidden>
+        <input class="form-control" type="text" value="<%=n%>" name="cap_mes" hidden>
+        <input class="form-control" type="text" value="<%=y%>" name="cap_año" hidden>
+        <input class="form-control" type="text" value="<%=emp_id_jefe%>" name="emp_id_jefe" hidden>
+
+
+        <div class="container col-xl-12 table-captura">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-captura">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Gafete</th>
+                            <th>Nombre</th>
+
+
+
+
+
+                            <!-- Post dias -->
+                            <th>
+                                <h20><%= diaSemana(day,n,y) %></label>
+                                    <h20> <%= day%></h20>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <% for (let i = 0; i < empleadosPorJefe.length; i++) { %>
+                        <tr>
+                            <td>
+                                <label><%= empleadosPorJefe[i].emp_id %>
+                                    <input type="hidden" name="gafete" value="<%= empleadosPorJefe[i].emp_id %>">
+                            </td>
+
+                            <td class="td-name"><%= empleadosPorJefe[i].emp_nombre %></td>
+
+
+                            <td>
+                                <select class="select-captura" name="select">
+                                    <option selected value="A">A</option>
+                                    <option>R</option>
+                                    <option>V</option>
+                                    <option>PC</option>
+                                    <option>PS</option>
+                                    <option>F</option>
+                                    <option>I</option>
+                                    <option>C</option>
+                                    <option>S</option>
+                                </select>
+                            </td>
+
+
+                            <% } %>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+    </form>
+</div>
+
+
+<% include ./static/footer %>
+</body>
+
+</html>
