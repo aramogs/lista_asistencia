@@ -86,6 +86,16 @@
 </div>
 <div class="container-fluid">
     <div class="row">
+        <div class="col-lg-12">
+            <div <%= message %> class="alert alert-warning alert-dismissible fade show animated " id="message"  role="alert">
+                <strong class="">Aviso!</strong> 
+                Antes de imprimir su lista semanal, debe aclarar los motivos de las faltas de sus empleados: <a href="/login/motivo_falta">Capturar Motivos</a>
+                </button>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
 
 
 
@@ -96,8 +106,8 @@
                         <h3>Empleados actuales</h3>
                     </div>
                 </div>
-                <div class="col-lg-9 text-right">
-                    <div>
+                <div class="col-lg-9 text-right ">
+                    <div id="printButton">
                         <button type="button" id="printJSPDFButton" class="btn btn-primary"> <span id="printloading"
                                 role="status"></span> <span class="fas fa-print"></span></span> Imprimir</button>
                     </div>
@@ -197,6 +207,10 @@
     window.onload = function () {
         $(".spinner-border").fadeOut("fast");
         $('.main').show('slow');
+
+        if ($('#message').is(':visible')) {
+            $('#printButton').hide()
+    }
     }
 
     $('#myTable2').dataTable({
@@ -204,6 +218,8 @@
         "ordering": false,
         "info": false
     });
+
+ 
 </script>
 
 <script>
@@ -247,7 +263,7 @@
         doc.setFont("times");
         doc.setFontStyle("bold");
         doc.setTextColor(46, 117, 182);
-        doc.text(15, 14, 'LISTA DE EMPLEADOS TRISTONE FLOWTECH MEXICO')
+        doc.text(15, 14, 'LISTA DE EMPLEADOS: TRISTONE FLOWTECH MEXICO')
 
         // Imagen Logo
         doc.addImage(logo, 'PNG', 250, 10, 10, 5, undefined, 'FAST')
@@ -327,18 +343,17 @@
 
         // Or use javascript directly:
         doc.autoTable({
-            styles: { fontSize: number = 8},
+            styles: { fontSize: number = 8 },
             rowPageBreak: function (row) {
                 avoid
             },
-            
+
             didDrawPage: data => {
                 let footerStr = "Pagina " + doc.internal.getNumberOfPages();
                 if (typeof doc.putTotalPages === 'function') {
                     footerStr = footerStr + " de " + totalPagesExp;
                 }
                 if (data.section === 'body') {
-                    console.log("Heey");
 
                     doc.addImage(checkbox, 'PNG', data.cell.x + 200, data.cell.y + 200, 50000, 50000);
                 }
@@ -360,7 +375,7 @@
                 if (data.section === 'body' && data.column.index < 7) {
 
                     doc.addImage(checkbox, 'PNG', data.cell.x - 2, data.cell.y + 1, 4, 4);
-                    
+
                 }
 
             },

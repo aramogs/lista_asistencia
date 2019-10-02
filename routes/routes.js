@@ -23,6 +23,8 @@ router.post('/alta_empleado', routesController.alta_empleado_POST);
 router.post('/captura_diaria', routesController.captura_diaria_POST);
 router.post('/guardar_captura_diaria', routesController.guardar_captura_diaria_POST);
 router.post('/captura_motivo_faltas', routesController.captura_motivo_faltas_POST);
+router.post('/motivo_falta', routesController.motivo_falta_POST);
+router.get('/seleccionar_semana', routesController.seleccionar_semana_GET);
 router.get('*', (req, res) => {
   res.send('404 Page not found');
 });

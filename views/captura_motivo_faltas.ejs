@@ -51,7 +51,14 @@
                                 <td class="align-middle">
                                     <div class="form-group">
                                         <input  type="text" class="form-control" name="cap_id" id="cap_id" aria-describedby="helpId" value="<%= motivoFalta[i].cap_id %>" hidden>
-                                        <input  type="text" class="form-control" name="motivo_falta" id="motivo_falta" aria-describedby="helpId" placeholder="Descripcion de la falta" required>
+                                        <select class="form-control" id="motivo_falta" name="motivo_falta" required>
+                  
+                                            <option  value="" selected>Seleccionar</option required>
+                                                <% for(let i = 0; i < motivos.length; i++){ %>
+                                                        <option value="<%=motivos[i].id_motivo%>"><%=motivos[i].motivo_descripcion%></option>
+                                                    <%}%>
+   
+                                        </select>
                                     </div>
                                 </td>
                             </tr>

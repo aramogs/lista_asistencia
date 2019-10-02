@@ -68,8 +68,21 @@ funcion.capturaHistorial = (emp_id_jefe,cap_año,cap_mes,callback)=>{
     })
 }
 
+funcion.SearchMotivoFaltas = (callback)=>{
+    db.query(`
+    SELECT * FROM motivo_faltas
+     `,
+    function (err, result, fields) {
+        if (err) {
+            callback(err, null);
 
-funcion.verificarMotivoFalta = (emp_id_jefe,cap_año,cap_mes,callback)=>{
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
+funcion.verificarMotivoFalta = (emp_id_jefe,callback)=>{
     db.query(`
     SELECT * FROM captura WHERE emp_id_jefe = ${emp_id_jefe}
     AND cap_captura = "F"
@@ -87,6 +100,8 @@ funcion.verificarMotivoFalta = (emp_id_jefe,cap_año,cap_mes,callback)=>{
         }
     })
 }
+
+
 
 funcion.InsertarMotivoFalta = (motivo_falta, cap_id,callback)=>{
     db.query(`UPDATE captura SET motivo_falta = "${motivo_falta}" WHERE cap_id = ${cap_id} `, function (err, result, fields) {

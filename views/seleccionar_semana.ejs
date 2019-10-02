@@ -72,24 +72,6 @@
 </div>
 
 <% include ./static/footer %>
-<script>
-
-
-$( document ).ready(function() {
-    
-$('#cap_mes option').each(function() {
-
-  thisMonth =$(this).attr("value")
-
-  if (thisMonth > <%=currentMonth%>) {
-    $(this).hide();
-  }
-
-});
-});
-
-
-</script>
 </body>
 
 </html>
