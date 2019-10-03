@@ -116,3 +116,10 @@ padding: 0;
 
 }
 
+.week-picker{
+  text-align:center;
+}
+.week-picker{
+  display:inline-block;
+  margin:0 auto;
+}
