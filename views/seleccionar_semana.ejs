@@ -16,12 +16,31 @@
 
         <div class="col-lg-6 text-center">
             <div class="jumbotron jumbotron-fluid bg-transparent">
+
                 <div class="container">
                     <h1 class="display-4">Seleccionar Semana</h1>
                     <hr>
                     <div class="input-group ">
                         <div class="week-picker"></div>
                     </div>
+                    <div class="form-group">
+                        <label for="supervisor"></label>
+                        <select class="form-control" name="supervisor" id="supervisor" required>
+                            <option value="" selected disabled hidden>Seleccionar</option required>
+
+                            <% for(let i = 0; i < accesos.length; i++){ %>
+
+                            <% for(let y = 0; y < empleados.length; y++){ %>
+
+                            <% if(empleados[y].emp_id === accesos[i].acc_id){ %>
+
+                            <option value="<%=empleados[y].emp_id%>"><%=empleados[y].emp_nombre%></option>
+                            <%}%>
+                                      <%}%>
+                            <%}%>
+          
+                            </select>
+                          </div>
                     <hr>
                 </div>
                 <div class="container-fluid">
@@ -30,13 +49,13 @@
                         <div class="col-lg-6 text-center">
                             <div class="form-group">
                                 <label for="startDate">Fecha Inicial</label>
-                                <input type="text" class="form-control text-center" name="startDate" id="startDate" placeholder="YYYY-MM-DD" value="" readonly>
+                                <input type="text" class="form-control text-center" name="startDate" id="startDate" placeholder="YYYY-MM-DD" value="" readonly >
                             </div>
                         </div>
                         <div class="col-lg-6 text-center">
                             <div class="form-group">
                                 <label for="endDate">Fecha Final</label>
-                                <input type="text" class="form-control text-center" name="endDate" id="endDate" placeholder="YYYY-MM-DD" value="" readonly>
+                                <input type="text" class="form-control text-center" name="endDate" id="endDate" placeholder="YYYY-MM-DD" value="" readonly >
                             </div>
                         </div>
 
@@ -44,7 +63,7 @@
                     <div class="row animated fadeIn fast">
                         <div class="col-lg-12">
                             <div class="box-footer">
-                                <button type="submit" class="btn btn-primary btn-lg btn-block">Seleccionar</button>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block" id="btnSeleccionar">Seleccionar</button>
                             </div>
                         </div>
                     </div>
@@ -57,57 +76,56 @@
 
 <% include ./static/footer %>
 </body>
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
+            $('#btnSeleccionar').hide();
+            let startDate;
+            let endDate;
 
-        let startDate;
-        let endDate;
-
-        let selectCurrentWeek = function () {
-            window.setTimeout(function () {
-                $('.week-picker').find('.ui-datepicker-current-day a').addClass('ui-state-active')
-            }, 1);
-        }
-
-        $('.week-picker').datepicker({
-            dateFormat: 'yy-mm-dd',
-            showOtherMonths: true,
-            selectOtherMonths: true,
-            firstDay: 1,
-            showWeek: true,
-            onSelect: function (dateText, inst) {
-                let date = $(this).datepicker('getDate');
-                startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
-                endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 7);
-                let dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-                $('#startDate').val($.datepicker.formatDate(dateFormat, startDate, inst.settings));
-                $('#endDate').val($.datepicker.formatDate(dateFormat, endDate, inst.settings));
-
-
-                console.log($('#startDate').val());
-                console.log($('#endDate').val());
-
-                selectCurrentWeek();
-            },
-            beforeShowDay: function (date) {
-                let cssClass = '';
-                if (date >= startDate && date <= endDate)
-                    cssClass = 'ui-datepicker-current-day';
-                return [true, cssClass];
-            },
-            onChangeMonthYear: function (year, month, inst) {
-                selectCurrentWeek();
+            let selectCurrentWeek = function () {
+                window.setTimeout(function () {
+                    $('.week-picker').find('.ui-datepicker-current-day a').addClass('ui-state-active')
+                }, 1);
             }
-        });
 
-        $('.week-picker .ui-datepicker-calendar ').on('mousemove', 'tr', function () { $(this).find('td a').addClass('ui-state-hover'); });
-        $('.week-picker .ui-datepicker-calendar ').on('mouseleave', 'tr', function () { $(this).find('td a').removeClass('ui-state-hover'); });
+            $('.week-picker').datepicker({
+                dateFormat: 'yy-m-d',
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                firstDay: 1,
+                showWeek: true,
+                onSelect: function (dateText, inst) {
+                    let date = $(this).datepicker('getDate');
+                    startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+                    endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 7);
+                    let dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
+                    $('#startDate').val($.datepicker.formatDate(dateFormat, startDate, inst.settings));
+                    $('#endDate').val($.datepicker.formatDate(dateFormat, endDate, inst.settings));
+
+                    $('#btnSeleccionar').show();
 
 
+                    console.log($('#startDate').val());
+                    console.log($('#endDate').val());
 
+                    selectCurrentWeek();
+                },
+                beforeShowDay: function (date) {
+                    let cssClass = '';
+                    if (date >= startDate && date <= endDate)
+                        cssClass = 'ui-datepicker-current-day';
+                    return [true, cssClass];
+                },
+                onChangeMonthYear: function (year, month, inst) {
+                    selectCurrentWeek();
+                }
+            });
 
-    })
+            $('.week-picker .ui-datepicker-calendar ').on('mousemove', 'tr', function () { $(this).find('td a').addClass('ui-state-hover'); });
+            $('.week-picker .ui-datepicker-calendar ').on('mouseleave', 'tr', function () { $(this).find('td a').removeClass('ui-state-hover'); });
 
-</script>
+        })
 
-</html>
+    </script>
+
+    </html>

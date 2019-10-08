@@ -8,6 +8,24 @@ img {
   height: 100%;
 }
 
+#centeredImg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+  height: 100%;
+
+}
+
+.jumbotronBg {
+  background: url('../img/white-background.jpg') no-repeat center center;
+background-size: cover;
+height: 100%;
+
+}
+
+
+
 .icoSidebar {
   color: #17a2b8;
 }

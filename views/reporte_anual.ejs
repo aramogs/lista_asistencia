@@ -1,0 +1,177 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+
+<div class="jumbotron jumbotron col-xl-12 bg-transparent jumbotronBg">
+
+    <div class="container">
+        <div class="row  animated fadeIn fast">
+            <div class="col-lg-12">
+                <img id="centeredImg" src="/img/tristone_logo_head.png" class="rounded mx-auto d-block text-center"
+                    alt="Tristone Flowtech">
+            </div>
+        </div>
+        <h1 class="display-3 text-center">Lista De Asistencia</h1>
+        <p class="lead text-center">Reporte Mensual</p>
+
+    </div>
+</div>
+<hr>
+<div class="row col-lg-12">
+    <div class="col-lg-6">
+        <div class="jumbotron bg-light ">
+            <p class="lead text-center">Contributors</p>
+            <canvas id="horizontalBar" width="400" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="jumbotron bg-light ">
+            <p class="lead text-center">Contributors [Heads]</p>
+            <canvas id="verticalBar" width="400" height="120"></canvas>
+        </div>
+    </div>
+</div>
+
+
+<% include ./static/footer %>
+</body>
+<script>
+
+
+    var ctx = document.getElementById('horizontalBar').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'horizontalBar',
+
+        data: {
+            labels: ['Justified', 'Unjustified'],
+            datasets: [{
+                label: '',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(  55, 133, 252  , 1)',
+                    'rgba( 243, 252, 55 , 1)',
+
+                ],
+                borderColor: [
+                    'rgba( 174, 214, 241 , .2)',
+                    'rgba( 243, 252, 55 , .2)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            },
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: ''
+            },
+            plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    color: "#cc55aa",
+                }
+            }
+        },
+
+    });
+
+    var ctx = document.getElementById('verticalBar').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+
+        data: {
+            labels: ["Holidays", "Permits", "Permits paid for the plant", "Incapacity,Abscence w/o comment ", "Out of city", "Sick w/o incapacity", "Relative sick", "Late to take transportation", "Personal Problems", "Over sleep", "Looking for other job", "Broken car", "Went to doctor", "Taking care of children", "Attend funeral", "Suspendend", "Abandonned"],
+            datasets: [{
+                label: '',
+                data: [270, 184, 23, 182, 257, 15, 70, 33, 22, 55, 20, 3, 1, 7, 15, 6, 15, 63, 200],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
+            },
+            legend: {
+                display: false,
+            },
+            title: {
+                display: true,
+                text: ''
+            },
+
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                }
+            }
+        },
+    });
+
+</script>
+
+</html>

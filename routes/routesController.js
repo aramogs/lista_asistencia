@@ -812,9 +812,81 @@ controller.guardar_captura_diaria_POST = (req, res) => {
 
 }
 
+///////////////////////////////////////////////////
 
-controller.seleccionar_semana_GET = (req,res)=>{
-   res.render("seleccionar_semana.ejs")
+
+controller.seleccionar_semana_GET = (req, res) => {
+    funcionE.empleadosAccessAll(1, '=', (err, accesos) => {
+        funcionE.empleadosTodos((err, empleados) => {
+
+            res.render("seleccionar_semana.ejs", {
+                empleados,
+                accesos
+            })
+        })
+    })
+}
+
+controller.reporte_semanal_POST = (req, res) => {
+    emp_id_jefe = req.body.supervisor
+    startDate = req.body.startDate
+    endDate = req.body.endDate
+
+    cap_dia_inicio = new Date(startDate).getDate()
+    cap_dia_final = new Date(endDate).getDate()
+    cap_mes_inicial = new Date(startDate).getMonth() + 1
+    cap_mes_final = new Date(endDate).getMonth() + 1
+    cap_año = new Date(startDate).getFullYear()
+
+
+
+    funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
+
+        funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
+
+            funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
+
+                funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
+
+
+                    faltas_justificadas = justified1.length + justified2.length
+                    faltas_injustificadas = unjustified1.length + unjustified2.length
+          
+
+
+                    res.render('reporte_semanal.ejs',
+                        {
+                            faltas_justificadas,
+                            faltas_injustificadas
+                        })
+                })
+            })
+        })
+    })
+
+}
+
+
+///////////////////////////////////////////////////
+
+controller.seleccionar_mes_GET = (req, res) => {
+    res.render("seleccionar_mes.ejs")
+}
+
+controller.reporte_mensual_POST = (req, res) => {
+
+    res.render('reporte_mensual.ejs')
+
+}
+
+controller.select_year_GET = (req, res) => {
+    res.render("select_year.ejs")
+}
+
+controller.reporte_anual_POST = (req, res) => {
+
+    res.render('reporte_anual.ejs')
+
 }
 
 module.exports = controller;

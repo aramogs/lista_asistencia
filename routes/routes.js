@@ -25,6 +25,11 @@ router.post('/guardar_captura_diaria', routesController.guardar_captura_diaria_P
 router.post('/captura_motivo_faltas', routesController.captura_motivo_faltas_POST);
 router.post('/motivo_falta', routesController.motivo_falta_POST);
 router.get('/seleccionar_semana', routesController.seleccionar_semana_GET);
+router.post('/reporte_semanal', routesController.reporte_semanal_POST);
+router.get('/seleccionar_mes', routesController.seleccionar_mes_GET);
+router.post('/reporte_mensual', routesController.reporte_mensual_POST);
+router.get('/select_year', routesController.select_year_GET);
+router.post('/reporte_anual', routesController.reporte_anual_POST);
 router.get('*', (req, res) => {
   res.send('404 Page not found');
 });

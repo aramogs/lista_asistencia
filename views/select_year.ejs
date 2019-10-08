@@ -1,0 +1,94 @@
+<% include ./static/header %>
+<% include ./static/sidebar %>
+<% include ./static/navbar %>
+
+<div class="col-md-10 col-lg-10-2 col-xl-11">
+
+    <div class="row mt-1 animated fadeIn fast">
+        <div class="col-lg-6">
+            <img id="loginImg" src="/img/tristone_logo_head.png" class="rounded mx-auto d-block"
+                alt="Tristone Flowtech">
+        </div>
+    </div>
+
+    <form action="/reporte_anual" method="POST">
+
+
+        <div class="col-lg-6 text-center">
+            <div class="jumbotron jumbotron-fluid bg-transparent">
+                    <h1 class="display-4">Seleccionar Mes</h1>
+                    <hr>
+                <div class="row">
+                    <div class="input-group ">
+                        <div class="col-lg-12">
+                            <div class="form-group text-center">
+                                <label for="yearPicker"></label>
+                                <input type="text" class="yearPicker form-control" name="year" id="year"
+                                    aria-describedby="helpId" placeholder="Seleccionar">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-lg-12 text-center">
+                            <div class="form-group">
+                                <label for="yearSelected">Año seleccionado</label>
+                                <input type="text" class="form-control text-center" name="yearSelected"
+                                    id="yearSelected" placeholder="YYYY-MM-DD" value="" readonly>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row animated fadeIn fast">
+                        <div class="col-lg-12">
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<% include ./static/footer %>
+</body>
+<script>
+    $(document).ready(function () {
+
+
+
+        $(".yearPicker").datepicker({
+            dateFormat: 'yy',
+            changeYear: true,
+            showButtonPanel: true,
+
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month").val("1");
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, 1));
+                $('#yearSelected').val(($.datepicker.formatDate('yy', new Date(year, 1))));
+            }
+        });
+
+        $(".yearPicker").focus(function () {
+            $(".ui-datepicker-month").hide();
+            $(".ui-datepicker-calendar").hide();
+            $("#ui-datepicker-div").position({
+                my: "center top",
+                at: "center bottom",
+                of: $(this)
+            });
+        });
+
+    });
+
+</script>
+
+</html>
+
+
