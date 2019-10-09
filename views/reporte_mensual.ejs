@@ -2,6 +2,21 @@
 <% include ./static/sidebar %>
 <% include ./static/navbar %>
 
+
+<% let arreglo = [] %>
+<% let motivos = {} %>
+
+
+<% for (let i = 0; i < motivo_falta.length; i++) { %>
+<%     for (let y = 0; y < captura.length; y++) { %>
+<%         if (motivo_falta[i].id_motivo == captura[y].motivo_falta) { %>
+<% arreglo.push(motivo_falta[i].motivo_descripcion) %>
+<%       }   %>
+<%    } %>
+<% } %>
+
+<% arreglo.forEach(function (x) { motivos[x] = (motivos[x] || 0) + 1; }); %>
+
 <div class="jumbotron jumbotron col-xl-12 bg-transparent jumbotronBg">
 
     <div class="container">
@@ -13,6 +28,10 @@
         </div>
         <h1 class="display-3 text-center">Lista De Asistencia</h1>
         <p class="lead text-center">Reporte Mensual</p>
+        <h3 class="text-center">
+            <span class="badge badge-light "> <span class="badge badge-primary"> <span class="fas fa-calendar"></span>
+                </span> Del (<%=fecha.cap_año%>-<%=fecha.cap_mes_inicial%>-<%=fecha.cap_dia_inicio%> al  <%=fecha.cap_año%>-<%=fecha.cap_mes_inicial%>-<%=fecha.cap_dia_final%> )</span>
+        </h3>
 
     </div>
 </div>
@@ -30,12 +49,88 @@
             <canvas id="verticalBar" width="400" height="120"></canvas>
         </div>
     </div>
+
 </div>
+
+<div class="row col-lg-12">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <span class="badge badge-light "> <span class="badge badge-primary"> <span
+                                class="fas fa-border-all"></span> </span> Motivos de falta por empleado </span>
+                </h3>
+            </div>
+            <div class="card-body">
+
+
+
+                <table id="myTable" class="table table-fluid table-hover table-borderless ">
+                    <thead>
+                        <tr>
+                            <th>
+                                <h4><span class="badge badge-light border border-dark"> <span
+                                            class="badge badge-primary fas fa-id-badge"> </span> Empleado ID</span></h4>
+                            </th>
+                            <th>
+                                <h4><span class="badge badge-light border border-dark"> <span
+                                            class="badge badge-primary fas fa-address-card"> </span> Nombre</span>
+                                    </h4</th> <th>
+                                    <h4><span class="badge badge-light border border-dark"> <span
+                                                class="badge badge-primary fas fa-calendar-alt"> </span> Año</span>
+                                        </h4</th> <th>
+                                        <h4><span class="badge badge-light border border-dark"> <span
+                                                    class="badge badge-primary fas fa-calendar-week"> </span> Mes</span>
+                                            </h4</th> <th>
+                                            <h4><span class="badge badge-light border border-dark"> <span
+                                                        class="badge badge-primary fas fa-calendar-day"> </span>
+                                                    Dia</span></h4</th> <th>
+                                                <h4><span class="badge badge-light border border-dark"> <span
+                                                            class="badge badge-primary fas fa-bookmark"> </span> Motivo
+                                                        de la falta</h4>
+                                                </h4</th> </tr> </thead> <tbody>
+                                                <%  for (let i = 0; i < captura.length; i++) { %>
+                        <tr>
+                            <td><%= captura[i].emp_id %></td>
+
+                            <%  for(let y = 0; y< empleados.length; y++){ %>
+                            <% if(captura[i].emp_id == empleados[y].emp_id){ %>
+                            <td><%= empleados[y].emp_nombre %></td>
+                            <% } %>
+                            <% } %>
+
+                            <td><%= captura[i].cap_año %></td>
+                            <td><%= captura[i].cap_mes %></td>
+                            <td><%= captura[i].cap_dia %></td>
+                            <%  for(let y = 0; y< motivo_falta.length; y++){ %>
+                            <% if(captura[i].motivo_falta == motivo_falta[y].id_motivo){ %>
+                            <td><%= motivo_falta[y].motivo_descripcion %></td>
+                            <% } %>
+                            <% } %>
+                        </tr>
+
+                        <% } %>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 <% include ./static/footer %>
 </body>
 <script>
+
+    labels = []
+    data = []
+    motivos = <%- JSON.stringify(motivos) %>;
+
+    labels.push(Object.keys(motivos))
+    data.push(Object.values(motivos))
 
 
     var ctx = document.getElementById('horizontalBar').getContext('2d');
@@ -46,7 +141,7 @@
             labels: ['Justified', 'Unjustified'],
             datasets: [{
                 label: '',
-                data: [12, 19, 3, 5, 2, 3],
+                data: [<%= faltas_justificadas %>, <%= faltas_injustificadas %>, 1,],
                 backgroundColor: [
                     'rgba(  55, 133, 252  , 1)',
                     'rgba( 243, 252, 55 , 1)',
@@ -82,8 +177,7 @@
             plugins: {
                 datalabels: {
                     align: 'end',
-                    anchor: 'end',
-                    color: "#cc55aa",
+                    anchor: 'centered'
                 }
             }
         },
@@ -95,10 +189,12 @@
         type: 'bar',
 
         data: {
-            labels: ["Holidays", "Permits", "Permits paid for the plant", "Incapacity,Abscence w/o comment ", "Out of city", "Sick w/o incapacity", "Relative sick", "Late to take transportation", "Personal Problems", "Over sleep", "Looking for other job", "Broken car", "Went to doctor", "Taking care of children", "Attend funeral", "Suspendend", "Abandonned"],
+            labels: labels[0],
+
             datasets: [{
                 label: '',
-                data: [270, 184, 23, 182, 257, 15, 70, 33, 22, 55, 20, 3, 1, 7, 15, 6, 15, 63, 200],
+                data: data[0],
+
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

@@ -26,6 +26,24 @@
                                 <input type="text" class="monthPicker form-control" name="month" id="month"
                                     aria-describedby="helpId" placeholder="Seleccionar">
                             </div>
+                            <div class="form-group">
+                                    <label for="supervisor"></label>
+                                    <select class="form-control" name="supervisor" id="supervisor" required>
+                                        <option value="" selected disabled hidden>Seleccionar</option required>
+            
+                                        <% for(let i = 0; i < accesos.length; i++){ %>
+            
+                                        <% for(let y = 0; y < empleados.length; y++){ %>
+            
+                                        <% if(empleados[y].emp_id === accesos[i].acc_id){ %>
+            
+                                        <option value="<%=empleados[y].emp_id%>"><%=empleados[y].emp_nombre%></option>
+                                        <%}%>
+                                                  <%}%>
+                                        <%}%>
+                      
+                                        </select>
+                                      </div>
                         </div>
                     </div>
                 </div>

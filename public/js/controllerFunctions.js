@@ -1,9 +1,5 @@
 const funcion = {};
 const express = require('express');
-const app = express();
-
-
-
 
 
 const db = require('../db/conn');
@@ -113,6 +109,89 @@ funcion.InsertarMotivoFalta = (motivo_falta, cap_id,callback)=>{
     })
 }
 
+funcion.SearchCaptura_Faltante = (emp_id_jefe,callback)=>{
+    db.query(`
+    SELECT * FROM captura 
+    WHERE emp_id_jefe = ${emp_id_jefe}
+    AND cap_captura = "F"
+    AND motivo_falta  IS NULL
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+funcion.SearchJustificado = (emp_id_jefe, cap_año, cap_mes,cap_dia_inicio, cap_dia_final,callback)=>{
+    db.query(`
+    SELECT * FROM captura 
+    WHERE cap_dia BETWEEN ${cap_dia_inicio} AND ${cap_dia_final}
+    AND emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND cap_mes = ${cap_mes}
+    AND motivo_falta <= 4  
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+funcion.SearchInjustificado = (emp_id_jefe, cap_año, cap_mes,cap_dia_inicio, cap_dia_final,callback)=>{
+    db.query(`
+    SELECT * FROM captura 
+    WHERE cap_dia BETWEEN ${cap_dia_inicio} AND ${cap_dia_final}
+    AND emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND cap_mes = ${cap_mes}
+    AND motivo_falta > 4  
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+
+funcion.SearchCaptura = (emp_id_jefe, cap_año, cap_mes, cap_dia_inicio, cap_dia_final, callback)=>{
+    db.query(`
+    SELECT * FROM captura 
+    WHERE cap_dia  BETWEEN ${cap_dia_inicio} AND ${cap_dia_final}
+    AND emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND cap_mes = ${cap_mes}
+    AND motivo_falta >0
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
 
 funcion.SearchJustificado_MesInicial = (emp_id_jefe, cap_año, cap_mes,cap_dia_inicio,callback)=>{
     db.query(`
@@ -195,5 +274,107 @@ funcion.SearchInjustificado_MesFinal = (emp_id_jefe, cap_año, cap_mes, cap_dia_
             }
         })
 }
+
+funcion.SearchCaptura_MesInicial = (emp_id_jefe, cap_año, cap_mes,cap_dia_inicio,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE 
+    cap_dia >= ${cap_dia_inicio}
+    AND emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND cap_mes = ${cap_mes}
+    AND motivo_falta >0
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+funcion.SearchCaptura_MesFinal = (emp_id_jefe, cap_año, cap_mes, cap_dia_final,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE 
+    cap_dia <= ${cap_dia_final}
+    AND emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND cap_mes = ${cap_mes}
+    AND motivo_falta >0
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+
+funcion.SearchJustificado_Anual = (emp_id_jefe, cap_año,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE 
+    emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND motivo_falta <= 4  
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+funcion.SearchInjustificado_Anual = (emp_id_jefe, cap_año ,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE 
+    emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND motivo_falta > 4  
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+funcion.SearchCaptura_Anual = (emp_id_jefe, cap_año,callback)=>{
+    db.query(`
+    SELECT * FROM captura WHERE 
+    emp_id_jefe = ${emp_id_jefe}
+    AND cap_año = ${cap_año}
+    AND motivo_falta >0
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+
+
 
 module.exports = funcion;
