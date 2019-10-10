@@ -839,57 +839,64 @@ controller.reporte_semanal_POST = (req, res) => {
     cap_año = new Date(startDate).getFullYear()
 
 
-    if (cap_mes_inicial == cap_mes_final) {
+    funcion.SearchCaptura_Faltante(emp_id_jefe, (err, captura_faltante) => {
 
-        funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
-            funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
-                funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
-                    funcion.SearchMotivoFaltas((err, motivo_falta) => {
-                        funcionE.empleadosTodos((err, empleados) => {
+        if (captura_faltante.length >= 1) {
+            view = "null"
 
 
-                            faltas_justificadas = justified.length
-                            faltas_injustificadas = unjustified.length
-                            res.render('reporte_semanal.ejs', {
-                                faltas_justificadas,
-                                faltas_injustificadas,
-                                motivo_falta,
-                                captura,
-                                empleados,
-                                startDate,
-                                endDate
+            if (cap_mes_inicial == cap_mes_final) {
+
+                funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
+                    funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
+                        funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
+                            funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                funcionE.empleadosTodos((err, empleados) => {
+
+
+                                    faltas_justificadas = justified.length
+                                    faltas_injustificadas = unjustified.length
+                                    res.render('reporte_semanal.ejs', {
+                                        faltas_justificadas,
+                                        faltas_injustificadas,
+                                        motivo_falta,
+                                        captura,
+                                        empleados,
+                                        startDate,
+                                        endDate,
+                                        view
+                                    })
+                                })
                             })
                         })
                     })
                 })
-            })
-        })
+            } else {
+                funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
+                    funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
+                        funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
+                            funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
+                                funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
+                                    funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
+                                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                            funcionE.empleadosTodos((err, empleados) => {
+
+                                                faltas_justificadas = justified1.length + justified2.length
+                                                faltas_injustificadas = unjustified1.length + unjustified2.length
+                                                captura = captura1.concat(captura2)
 
 
-    } else {
-
-        funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
-            funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
-                funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
-                    funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
-                        funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
-                            funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
-                                funcion.SearchMotivoFaltas((err, motivo_falta) => {
-                                    funcionE.empleadosTodos((err, empleados) => {
-
-                                        faltas_justificadas = justified1.length + justified2.length
-                                        faltas_injustificadas = unjustified1.length + unjustified2.length
-                                        captura = captura1.concat(captura2)
-
-
-                                        res.render('reporte_semanal.ejs', {
-                                            faltas_justificadas,
-                                            faltas_injustificadas,
-                                            captura,
-                                            motivo_falta,
-                                            empleados,
-                                            startDate,
-                                            endDate
+                                                res.render('reporte_semanal.ejs', {
+                                                    faltas_justificadas,
+                                                    faltas_injustificadas,
+                                                    captura,
+                                                    motivo_falta,
+                                                    empleados,
+                                                    startDate,
+                                                    endDate,
+                                                    view
+                                                })
+                                            })
                                         })
                                     })
                                 })
@@ -897,10 +904,71 @@ controller.reporte_semanal_POST = (req, res) => {
                         })
                     })
                 })
-            })
-        })
-    }
+            }
+        } else {
+            view = "hidden"
+            if (cap_mes_inicial == cap_mes_final) {
 
+                funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
+                    funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
+                        funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
+                            funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                funcionE.empleadosTodos((err, empleados) => {
+
+
+                                    faltas_justificadas = justified.length
+                                    faltas_injustificadas = unjustified.length
+                                    res.render('reporte_semanal.ejs', {
+                                        faltas_justificadas,
+                                        faltas_injustificadas,
+                                        motivo_falta,
+                                        captura,
+                                        empleados,
+                                        startDate,
+                                        endDate,
+                                        view
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            } else {
+                funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
+                    funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
+                        funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
+                            funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
+                                funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
+                                    funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
+                                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                            funcionE.empleadosTodos((err, empleados) => {
+
+                                                faltas_justificadas = justified1.length + justified2.length
+                                                faltas_injustificadas = unjustified1.length + unjustified2.length
+                                                captura = captura1.concat(captura2)
+
+
+                                                res.render('reporte_semanal.ejs', {
+                                                    faltas_justificadas,
+                                                    faltas_injustificadas,
+                                                    captura,
+                                                    motivo_falta,
+                                                    empleados,
+                                                    startDate,
+                                                    endDate,
+                                                    view
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            }
+        }
+    })
 
 }
 
@@ -931,57 +999,66 @@ controller.reporte_mensual_POST = (req, res) => {
 
     fecha = { cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final }
 
-    if (cap_mes_inicial == cap_mes_final) {
 
-        funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
-            funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
-                funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
-                    funcion.SearchMotivoFaltas((err, motivo_falta) => {
-                        funcionE.empleadosTodos((err, empleados) => {
+    funcion.SearchCaptura_Faltante(emp_id_jefe, (err, captura_faltante) => {
+
+        if (captura_faltante.length >= 1) {
+            view = "null"
+
+            if (cap_mes_inicial == cap_mes_final) {
+
+                funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
+                    funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
+                        funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
+                            funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                funcionE.empleadosTodos((err, empleados) => {
 
 
-                            faltas_justificadas = justified.length
-                            faltas_injustificadas = unjustified.length
-                            res.render('reporte_mensual.ejs', {
-                                faltas_justificadas,
-                                faltas_injustificadas,
-                                motivo_falta,
-                                captura,
-                                empleados,
-                                fecha
+                                    faltas_justificadas = justified.length
+                                    faltas_injustificadas = unjustified.length
+                                    res.render('reporte_mensual.ejs', {
+                                        faltas_justificadas,
+                                        faltas_injustificadas,
+                                        motivo_falta,
+                                        captura,
+                                        empleados,
+                                        fecha,
+                                        view
 
+                                    })
+                                })
                             })
                         })
                     })
                 })
-            })
-        })
 
 
-    } else {
+            } else {
 
-        funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
-            funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
-                funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
-                    funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
-                        funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
-                            funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
-                                funcion.SearchMotivoFaltas((err, motivo_falta) => {
-                                    funcionE.empleadosTodos((err, empleados) => {
+                funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
+                    funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
+                        funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
+                            funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
+                                funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
+                                    funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
+                                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                            funcionE.empleadosTodos((err, empleados) => {
 
-                                        faltas_justificadas = justified1.length + justified2.length
-                                        faltas_injustificadas = unjustified1.length + unjustified2.length
-                                        captura = captura1.concat(captura2)
+                                                faltas_justificadas = justified1.length + justified2.length
+                                                faltas_injustificadas = unjustified1.length + unjustified2.length
+                                                captura = captura1.concat(captura2)
 
 
-                                        res.render('reporte_mensual.ejs', {
-                                            faltas_justificadas,
-                                            faltas_injustificadas,
-                                            captura,
-                                            motivo_falta,
-                                            empleados,
-                                            fecha
+                                                res.render('reporte_mensual.ejs', {
+                                                    faltas_justificadas,
+                                                    faltas_injustificadas,
+                                                    captura,
+                                                    motivo_falta,
+                                                    empleados,
+                                                    fecha
 
+                                                })
+                                            })
                                         })
                                     })
                                 })
@@ -989,9 +1066,74 @@ controller.reporte_mensual_POST = (req, res) => {
                         })
                     })
                 })
-            })
-        })
-    }
+            }
+
+        } else {
+            view = "hidden"
+            if (cap_mes_inicial == cap_mes_final) {
+
+                funcion.SearchJustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, justified) => {
+                    funcion.SearchInjustificado(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, unjustified) => {
+                        funcion.SearchCaptura(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final, (err, captura) => {
+                            funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                funcionE.empleadosTodos((err, empleados) => {
+
+
+                                    faltas_justificadas = justified.length
+                                    faltas_injustificadas = unjustified.length
+                                    res.render('reporte_mensual.ejs', {
+                                        faltas_justificadas,
+                                        faltas_injustificadas,
+                                        motivo_falta,
+                                        captura,
+                                        empleados,
+                                        fecha,
+                                        view
+
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+
+
+            } else {
+
+                funcion.SearchJustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, justified1) => {
+                    funcion.SearchJustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, justified2) => {
+                        funcion.SearchInjustificado_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, unjustified1) => {
+                            funcion.SearchInjustificado_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, unjustified2) => {
+                                funcion.SearchCaptura_MesInicial(emp_id_jefe, cap_año, cap_mes_inicial, cap_dia_inicio, (err, captura1) => {
+                                    funcion.SearchCaptura_MesFinal(emp_id_jefe, cap_año, cap_mes_final, cap_dia_final, (err, captura2) => {
+                                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                                            funcionE.empleadosTodos((err, empleados) => {
+
+                                                faltas_justificadas = justified1.length + justified2.length
+                                                faltas_injustificadas = unjustified1.length + unjustified2.length
+                                                captura = captura1.concat(captura2)
+
+
+                                                res.render('reporte_mensual.ejs', {
+                                                    faltas_justificadas,
+                                                    faltas_injustificadas,
+                                                    captura,
+                                                    motivo_falta,
+                                                    empleados,
+                                                    fecha
+
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            }
+        }
+    })
 
 }
 
@@ -1010,46 +1152,65 @@ controller.select_year_GET = (req, res) => {
 controller.reporte_anual_POST = (req, res) => {
 
     emp_id_jefe = req.body.supervisor
-    cap_año =  req.body.yearSelected
- 
+    cap_año = req.body.yearSelected
 
-        funcion.SearchJustificado_Anual(emp_id_jefe, cap_año,  (err, justified) => {
-            funcion.SearchInjustificado_Anual(emp_id_jefe, cap_año, (err, unjustified) => {
-                        funcion.SearchCaptura_Anual(emp_id_jefe, cap_año, (err, captura) => {
+    funcion.SearchCaptura_Faltante(emp_id_jefe, (err, captura_faltante) => {
 
-                            faltas_justificadas = justified.length
-                            faltas_injustificadas = unjustified.length
-                                    
-                            funcion.SearchMotivoFaltas((err, motivo_falta) => {
-                                funcionE.empleadosTodos((err, empleados) => {
-                                    funcion.SearchCaptura_Faltante((err,captura_faltante)=>{
-if (captura_faltante.length > 1) {
-    view = "null"
-    console.log(view);
-    
-}else{
-    view = "null"
-    console.log(view);
-    
-}
+        if (captura_faltante.length >= 1) {
+            view = "null"
+            funcion.SearchJustificado_Anual(emp_id_jefe, cap_año, (err, justified) => {
+                funcion.SearchInjustificado_Anual(emp_id_jefe, cap_año, (err, unjustified) => {
+                    funcion.SearchCaptura_Anual(emp_id_jefe, cap_año, (err, captura) => {
 
-                                    console.log(faltas_justificadas);
-                                             console.log(faltas_injustificadas);
-                                                                        
-                                    res.render('reporte_anual.ejs', {
-                                        faltas_justificadas,
-                                        faltas_injustificadas,
-                                        captura,
-                                        motivo_falta,
-                                        empleados,
-                                        cap_año
-                                    })
-                                    })
+                        faltas_justificadas = justified.length
+                        faltas_injustificadas = unjustified.length
+
+                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                            funcionE.empleadosTodos((err, empleados) => {
+
+                                res.render('reporte_anual.ejs', {
+                                    faltas_justificadas,
+                                    faltas_injustificadas,
+                                    captura,
+                                    motivo_falta,
+                                    empleados,
+                                    cap_año,
+                                    view
                                 })
                             })
                         })
                     })
                 })
+            })
+
+        } else {
+            view = "hidden"
+            funcion.SearchJustificado_Anual(emp_id_jefe, cap_año, (err, justified) => {
+                funcion.SearchInjustificado_Anual(emp_id_jefe, cap_año, (err, unjustified) => {
+                    funcion.SearchCaptura_Anual(emp_id_jefe, cap_año, (err, captura) => {
+
+                        faltas_justificadas = justified.length
+                        faltas_injustificadas = unjustified.length
+
+                        funcion.SearchMotivoFaltas((err, motivo_falta) => {
+                            funcionE.empleadosTodos((err, empleados) => {
+
+                                res.render('reporte_anual.ejs', {
+                                    faltas_justificadas,
+                                    faltas_injustificadas,
+                                    captura,
+                                    motivo_falta,
+                                    empleados,
+                                    cap_año,
+                                    view
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        }
+    })
 }
 
 module.exports = controller;

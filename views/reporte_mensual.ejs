@@ -32,7 +32,11 @@
             <span class="badge badge-light "> <span class="badge badge-primary"> <span class="fas fa-calendar"></span>
                 </span> Del (<%=fecha.cap_año%>-<%=fecha.cap_mes_inicial%>-<%=fecha.cap_dia_inicio%> al  <%=fecha.cap_año%>-<%=fecha.cap_mes_inicial%>-<%=fecha.cap_dia_final%> )</span>
         </h3>
-
+        <div <%= view %> class="alert alert-warning alert-dismissible fade show animated infinite pulse slow"
+            role="alert">
+            <strong class="">Atencion!</strong> Esta lista no se encuentra actualizada<br>
+            Favor de llenar todas los motivos de faltas restantes --> <a href="/login/motivo_falta">Capturar Motivos</a>
+        </div>
     </div>
 </div>
 <hr>
