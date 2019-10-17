@@ -17,7 +17,7 @@ router.post('/guardar_captura', routesController.guardar_captura_POST);
 router.post('/verificar_jefe/:id', routesController.verificar_jefe_POST);
 router.post('/alta_empleado_turno', routesController.alta_empleado_turno_POST);
 router.post('/alta_empleado_subarea', routesController.alta_empleado_subarea_POST);
-router.post('/alta_empleado_verificarEstacion', routesController.alta_empleado_verificarEstacion_POST);
+router.post('/alta_empleado_puesto', routesController.alta_empleado_puesto_POST);
 router.post('/alta_empleado_verificacion', routesController.alta_empleado_verificacion_POST);
 router.post('/alta_empleado', routesController.alta_empleado_POST);
 router.post('/captura_diaria', routesController.captura_diaria_POST);

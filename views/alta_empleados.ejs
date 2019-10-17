@@ -87,9 +87,11 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12">
-            <div <%= message %> class="alert alert-warning alert-dismissible fade show animated " id="message"  role="alert">
-                <strong class="">Aviso!</strong> 
-                Antes de imprimir su lista semanal, debe aclarar los motivos de las faltas de sus empleados: <a href="/login/motivo_falta">Capturar Motivos</a>
+            <div <%= message %> class="alert alert-warning alert-dismissible fade show animated " id="message"
+                role="alert">
+                <strong class="">Aviso!</strong>
+                Antes de imprimir su lista semanal, debe aclarar los motivos de las faltas de sus empleados: <a
+                    href="/login/motivo_falta">Capturar Motivos</a>
                 </button>
             </div>
         </div>
@@ -127,9 +129,10 @@
                             <th>Eliminar</th>
                             <th>Gaffete</th>
                             <th>Nombre</th>
+                            <th>Turno</th>
                             <th>Area</th>
                             <th>Subarea</th>
-                            <th>Estacion</th>
+                            <th>Puesto</th>
                         </thead>
                         <tbody>
                             <%if(empleadosPorJefe) { %>
@@ -140,13 +143,18 @@
 
 
                                     <button type="submit" class="btn btn-danger"
-                                        formaction="/borrar_empleado/<%=empleadosPorJefe[i].emp_id%>">
-                                        Eliminar
-                                    </button>
+                                        formaction="/borrar_empleado/<%=empleadosPorJefe[i].emp_id%>">Eliminar</button>
 
                                 </td>
                                 <td><%= empleadosPorJefe[i].emp_id%></td>
                                 <td><%= empleadosPorJefe[i].emp_nombre%></td>
+
+                                <%  for(let y = 0; y < turnos.length; y++){   %>
+                                <% if(areaPorEmpleado[i].id_turno == turnos[y].id_turno){ %>
+                                <td><%= turnos[y].turno_descripcion%></td>
+
+                                <% } %>
+                                <% } %>
 
                                 <%  for(let y = 0; y < areas.length; y++){   %>
                                 <% if(areaPorEmpleado[i].id_area == areas[y].id_area){ %>
@@ -163,36 +171,27 @@
                                 <% } %>
                                 <% } %>
 
-                                <% let estacion = false %>
-                                <% let res %>
-                                <%  for(let y = 0; y < estaciones.length; y++){   %>
-                                <% estacion = false%>
-                                <% if(areaPorEmpleado[i].id_estacion == estaciones[y].id_estacion){ %>
-                                <% estacion = true%>
-                                <% res=estaciones[y].estacion %>
-
-                                <% break; %>
-
+                                <%  for(let y = 0; y < puestos.length; y++){   %>
+                                <% if(areaPorEmpleado[i].id_puesto == puestos[y].id_puesto){ %>
+                                <td><%= puestos[y].puesto_descripcion%></td>
 
                                 <% } %>
                                 <% } %>
 
 
-                                <%if(estacion == true){%>
 
-                                <td><%= res%></td>
 
-                                <% }else{ %>
-                                <td>N/A</td>
-                                <%}%>
-                                   
-                                       
+
+
+
+
+
                                 <% } %>
                                 <% } %>
                             </tr>
 
                         </tbody>
-                    </table>
+
                 </div>
             </form>
 
@@ -210,7 +209,7 @@
 
         if ($('#message').is(':visible')) {
             $('#printButton').hide()
-    }
+        }
     }
 
     $('#myTable2').dataTable({
@@ -219,7 +218,7 @@
         "info": false
     });
 
- 
+
 </script>
 
 <script>
@@ -232,6 +231,8 @@
     var lowbar = 'data:image/png;base64,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'
 
     var checkbox = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAABmJLR0QA/wD/AP+gvaeTAAADMklEQVR4nO3dzU4TYRTG8T9uJa5caEvjJ6leCx+uEcNewaWIl+FOjDeAIKhRV16IgUQXanApRReApC5OJ6NNZ6aE4X3PTJ9fMmnamdBz+nSm06ScAREREREREREREREREZGAxgI8Rwu4A0wBV3v3zwd43jL8Br4CX4D3wBvgW9SKTqEJrAJHQLcmyzHwErhS4usUxCzQwZo4ANaAOaBNdfYOsFrbWO1rWC9drLeZiHWdyEPsndQFXgHX45ZTqhvAJuneshS3nGKzWKHHwKPItZylZdI+3e4pTdLDVJ3DSCxjve4BlyPXMtAL0sPUqNjCel6NXUi/FvAH+9Cr02dGkZvAIXYm2Yxcy3+WsHfKWs42LWCD9LCWLNu99dt99/99LO/xs1w62Id4O6ev9d62D3K2Ce4DVtRcxvoWsIsddxuhiipBA3iM1T6Rsc081vu7UEUNI3nHTmas38Aaq6oV7AvhIG2s90/hyim2jxU1nrG+Q7X2jH4N7GxqkHGs9/1w5RRLjrl566uuqL9SejxXxh+R8igQZxSIMwrEGQXijAJxRoE4o0CcUSDOKBBnFIgzCsQZBeKMAnFGgTijQJxRIM4oEGcUiDMKxBkF4owCcUaBOKNAnFEgzigQZxSIMwrEGQUyvJ3YBZzEKPz6PY9+/V5XCsQZBeKMAnFGgTijQJxRIM4oEGcUyPC2izfxYxS+qev/1EdRWYEkYyWyRmvsU+3RGk2yR2tc6N12yniisgLZ7d1mvegfgYWSniuGBayHQZKevweqZSjJeKa7GevbWGgrVGtPaQJPgB9kTzq6h8PxTIsUDzCbwEYc7RF//u6wyx42WiorDEgHmN3PfYUCm8DG3B1go1RHxSROR/wBPMfeKZuxCwlkDBs93gWeRa5loAbpPMXlyLWEsIL1+hO4FLmWTDOkA4brGsoYNq4w6XMqbjnFlkhHjW9ho1TrYhJ4TTpqfDFuOcObJj2bOsTOROaBW2R/efRoHLiNndquY70khyn3e0a/i8BT6nW5iiNsivWZjRYPcUGXJjakfxq4hs3wrcpe8gu7oMtn7IIub3H2jVxERERERERERERERETkVP4CiMlPR/pz8lEAAAAASUVORK5CYII='
+
+    var pen = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjChEWGQvqaESFAAAA1UlEQVQoz4XRPS8EURgF4OeOWY1mKypRKiQiOvTiN+hFozCV2IpOohiKbXTaFRQqlKKyodH4Axokko3NFIJqPozdOO1zcvLeXIZlzb0LE7FgxSR4dVZwYt2sJcfBkcwjeHNa8IIXH7Y80P0znuiIBW1du7HvGm9atOoTPTd2uKvxiQbYkwr8LgzgamFDRwxSBzlHBQeJplGkgiS/LS4Kc25dOffkq+TqwrK+eTP6Fd43VS5kei61ZJWjx42VhcPBXxL5J5FIc4g1THuObbvO31zLiLb3HwIsNV6CmuVRAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTEwLTE3VDIyOjI1OjExKzAwOjAwnoAdNgAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0xMC0xN1QyMjoyNToxMSswMDowMO/dpYoAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC'
 
     $('#printJSPDFButton').click(function () {
         $('#printloading').addClass('spinner-grow spinner-grow-sm');
@@ -331,7 +332,9 @@
         var today = new Date();
         var formattedDate = today.toLocaleDateString("es-MX");
         var newdat = "Fecha de impresion (d/m/yyyy) : " + formattedDate;
-
+        doc.setTextColor(255, 255, 255);
+        doc.setFontStyle("bold");
+        doc.text(180, 23.5, newdat);
 
 
         // Autotable Empleados
@@ -364,17 +367,23 @@
                 doc.setFontStyle("normal");
                 doc.setFontSize(10);
                 doc.setTextColor(0, 0, 0)
-                doc.text(footerStr, 170, 277);
                 doc.setTextColor(255, 255, 255);
                 doc.setFontStyle("bold");
-                doc.text(180, 23.5, newdat);
+                doc.text(footerStr, 15, 214);
+
+
 
 
             },
             didDrawCell: data => {
-                if (data.section === 'body' && data.column.index < 7) {
+                if (data.section === 'body' && data.column.index < 6) {
 
                     doc.addImage(checkbox, 'PNG', data.cell.x - 2, data.cell.y + 1, 4, 4);
+
+                }
+                if (data.section === 'body' && data.column.index == 6) {
+
+                    doc.addImage(pen, 'PNG', data.cell.x - 2, data.cell.y + 1, 3, 3);
 
                 }
 
@@ -387,7 +396,6 @@
                 'Turno',
                 'Area',
                 'Subarea',
-                'Estacion',
                 'Puesto',
                 'Firma de Empleado']],
 
@@ -396,8 +404,13 @@
             ['<%= empleadosPorJefe[i].emp_id%>',
                 '<%= empleadosPorJefe[i].emp_nombre%>',
 
-                // Insertar Turno aqui
-                '<%= "T1"%>',
+               
+                <%  for (let y = 0; y < turnos.length; y++) {   %>
+                                <% if (areaPorEmpleado[i].id_turno == turnos[y].id_turno) { %>
+                    '<%= turnos[y].turno_descripcion%>'
+
+                    <% } %>
+                                <% } %>,
 
                                 <%  for (let y = 0; y < areas.length; y++) {   %>
                                 <% if (areaPorEmpleado[i].id_area == areas[y].id_area) { %>
@@ -414,32 +427,15 @@
 
 
 
-                                <% let estacion = false %>
-                                <% let res %>
-                                <%  for (let y = 0; y < estaciones.length; y++) {   %>
-                                <% estacion = false %>
-                                <% if (areaPorEmpleado[i].id_estacion == estaciones[y].id_estacion) { %>
-                                <% estacion = true %>
-                                <% res=estaciones[y].estacion %>
 
-                                <% break; %>
+            
+                                <%  for (let y = 0; y < puestos.length; y++) {   %>
+                                <% if (areaPorEmpleado[i].id_puesto == puestos[y].id_puesto) { %>
+                    '<%= puestos[y].puesto_descripcion%>'
 
-
-                                <% } %>
-                                <% } %>
-
-                                    
-
-                                <%if (estacion == true) {%>
-
-                '<%= res%>',
-
-                                <% } else { %>
-                'N/A',
-                                <%}%>
-                // Insertar Turno aqui
-                '<%= "Puesto Empleado"%>',
-                '_____________________________'],
+                    <% } %>
+                                <% } %>,
+                '                           '],
 
                          <%} %>
                         ],
@@ -463,9 +459,9 @@
         doc.putTotalPages(totalPagesExp);
     }
 
-    //  doc.save(`Lista_Empleados_<%= jefe%>_${formattedDate}.pdf`);
+    doc.save(`Lista_Empleados_<%= jefe%>_${formattedDate}.pdf`);
 
-    window.open(doc.output('bloburl'))
+    // window.open(doc.output('bloburl'))
 
 
 

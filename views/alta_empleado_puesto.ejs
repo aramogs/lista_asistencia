@@ -28,7 +28,7 @@
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Area</a></li>
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-2)">Turno</a></li>
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Subarea</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Estacion</li>
+                        <li class="breadcrumb-item active" aria-current="page">Puesto</li>
                     </ol>
                 </nav>
                 <!-- /Breadcrumb -->
@@ -37,21 +37,21 @@
 
                     <div class="container text-center">
                         <img src="/img/TristoneLogo.png" alt="">
-                        <h1 class="display-3 text-center">Seleccionar Subarea</h1>
+                        <h1 class="display-3 text-center">Seleccionar Puesto</h1>
                         <hr>
                     </div>
                     <div class="container-fluid">
                         <div class="row">
-                            <%if(estaciones) { %>
-                            <% for (let i = 0; i < estaciones.length; i++) { %>
+                            <%if(puestos) { %>
+                            <% for (let i = 0; i < puestos.length; i++) { %>
                             <!-- Card -->
                             <div class="col-lg-3 mt-4 grow">
                                     <div style="animation-delay: <%=i*.15%>s" class="card text-center animated bounceIn" >
                                     <div class="card-header ">
-                                        <h4 ><%= estaciones[i].estacion%></h4>
+                                        <h4 ><%= puestos[i].puesto_descripcion%></h4>
                                     </div>
                                     <div class="card-body">   
-                                                      <button type="submit" class="btn btn-block btn-outline-info" name="id_estacion"  formaction="/alta_empleado_verificacion" value="<%= estaciones[i].id_estacion%>" >Seleccionar</button>
+                                                      <button type="submit" class="btn btn-block btn-outline-info" name="id_puesto"  formaction="/alta_empleado_verificacion" value="<%= puestos[i].id_puesto%>" >Seleccionar</button>
                                     </div>
                                 </div>
                             </div>

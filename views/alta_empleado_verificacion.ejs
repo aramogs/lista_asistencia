@@ -18,14 +18,14 @@
                 <input type="hidden" id="emp_id" name="emp_id" value="<%=emp_id%>">
                 <input type="hidden" id="id_area" name="id_area" value="<%=id_area%>">
                 <input type="hidden" id="id_subarea" name="id_subarea" value="<%=id_subarea%>">
-                <input type="hidden" id="id_estacion" name="id_estacion" value="<%=id_estacion%>">
+                <input type="hidden" id="id_puesto" name="id_puesto" value="<%=id_puesto%>">
                 <input type="hidden" id="id_turno" name="id_turno" value="<%=id_turno%>">
                 <!-- Oculto para utilizar como req.body -->
 
                 <!-- Breadcrumb -->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <% if(id_estacion == null) {%>
+                        <% if(id_puesto == null) {%>
 
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-4)">Empleado</a></li>
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Area</a></li>
@@ -38,7 +38,7 @@
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-4)">Area</a></li>
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-3)">Turno</a></li>
                         <li class="breadcrumb-item"><a href="#" onclick="history.go(-2)">Subarea</a></li>
-                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Estacion</a></li>
+                        <li class="breadcrumb-item"><a href="#" onclick="history.go(-1)">Puesto</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Verificacion</li>
                         <% } %>
                     </ol>
@@ -128,18 +128,18 @@
                                 </div>
                             </div>
                             <!-- /Card -->
-                            <% if(id_estacion !== null) {%>
+                            <% if(id_puesto !== null) {%>
                             <!-- Card -->
                             <div class="col-lg-2 mt-4 grow">
                                 <div style="animation-delay: .60s" class="card text-center animated bounceIn shadow-lg">
                                     <div class="card border-info text-info p-2" ><span class="fa fa-boxes" aria-hidden="true"></span>
-                                        <h4>Estacion</h4>
+                                        <h4>Puesto</h4>
                                     </div>
                                     <div class="card-body">
 
-                                        <%  for(let i = 0; i < estaciones.length; i++){   %>
-                                        <% if(id_estacion == estaciones[i].id_estacion){ %>
-                                        <h5><%= estaciones[i].estacion%></h5>
+                                        <%  for(let i = 0; i < puestos.length; i++){   %>
+                                        <% if(id_puesto == puestos[i].id_puesto){ %>
+                                        <h5><%= puestos[i].puesto_descripcion%></h5>
 
                                         <% } %>
                                         <% } %>

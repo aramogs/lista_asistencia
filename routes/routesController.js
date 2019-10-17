@@ -128,23 +128,28 @@ controller.alta_empleados_POST = (req, res) => {
                 funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
                     funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
                         funcionA.areas((err, areas) => {
+                            funcionE.empleadosSearchPuestos((err, puestos) => {
+                                funcionA.turnos((err, turnos) => {
 
-                            funcionA.subareas((err, subareas) => {
-                                funcionA.estaciones((err, estaciones) => {
-                                    funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                    funcionA.subareas((err, subareas) => {
 
-                                        jefe = emp_id_jefe
-                                        res.render('alta_empleados.ejs', {
-                                            jefe,
-                                            empleados,
-                                            empleadosPorJefe,
-                                            data4: nombreJefe,
-                                            data5: "hidden",
-                                            areas,
-                                            subareas,
-                                            estaciones,
-                                            areaPorEmpleado,
-                                            message
+
+                                        funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+
+                                            jefe = emp_id_jefe
+                                            res.render('alta_empleados.ejs', {
+                                                jefe,
+                                                empleados,
+                                                empleadosPorJefe,
+                                                data4: nombreJefe,
+                                                data5: "hidden",
+                                                areas,
+                                                subareas,
+                                                puestos,
+                                                turnos,
+                                                areaPorEmpleado,
+                                                message
+                                            })
                                         })
                                     })
                                 })
@@ -157,23 +162,27 @@ controller.alta_empleados_POST = (req, res) => {
                 funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
                     funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
                         funcionA.areas((err, areas) => {
+                            funcionE.empleadosSearchPuestos((err, puestos) => {
+                                funcionA.turnos((err, turnos) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionA.estaciones((err, estaciones) => {
+                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
 
-                            funcionA.subareas((err, subareas) => {
-                                funcionA.estaciones((err, estaciones) => {
-                                    funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
-
-                                        jefe = emp_id_jefe
-                                        res.render('alta_empleados.ejs', {
-                                            jefe,
-                                            empleados,
-                                            empleadosPorJefe,
-                                            data4: nombreJefe,
-                                            data5: "hidden",
-                                            areas,
-                                            subareas,
-                                            estaciones,
-                                            areaPorEmpleado,
-                                            message
+                                                jefe = emp_id_jefe
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "hidden",
+                                                    areas,
+                                                    subareas,
+                                                    puestos,
+                                                    turnos,
+                                                    areaPorEmpleado,
+                                                    message
+                                                })
+                                            })
                                         })
                                     })
                                 })
@@ -181,8 +190,8 @@ controller.alta_empleados_POST = (req, res) => {
                         })
                     })
                 })
-
             }
+
         })
     })
 }
@@ -205,23 +214,28 @@ controller.verificar_jefe_POST = (req, res) => {
                 funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
                     funcionE.empleadosNombre(jefe, (err, nombreJefe) => {
                         funcionA.areas((err, areas) => {
-                            funcionA.subareas((err, subareas) => {
-                                funcionA.estaciones((err, estaciones) => {
-                                    funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                            funcionE.empleadosSearchPuestos((err, puestos) => {
+                                funcionA.turnos((err, turnos) => {
+                                    funcionA.subareas((err, subareas) => {
+                                        funcionA.estaciones((err, estaciones) => {
+                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
 
-                                        jefe = emp_id_jefe
+                                                jefe = emp_id_jefe
 
 
-                                        res.render('alta_empleados.ejs', {
-                                            jefe,
-                                            empleados,
-                                            empleadosPorJefe,
-                                            data4: nombreJefe,
-                                            data5: "null",
-                                            areas,
-                                            subareas,
-                                            estaciones,
-                                            areaPorEmpleado
+                                                res.render('alta_empleados.ejs', {
+                                                    jefe,
+                                                    empleados,
+                                                    empleadosPorJefe,
+                                                    data4: nombreJefe,
+                                                    data5: "null",
+                                                    areas,
+                                                    subareas,
+                                                    puestos,
+                                                    turnos,
+                                                    areaPorEmpleado
+                                                })
+                                            })
                                         })
                                     })
                                 })
@@ -232,6 +246,7 @@ controller.verificar_jefe_POST = (req, res) => {
             })
         }
     })
+
 
 }
 
@@ -252,6 +267,7 @@ controller.alta_empleado_turno_POST = (req, res) => {
 }
 
 controller.alta_empleado_subarea_POST = (req, res) => {
+
     emp_id = req.body.emp_id
     emp_id_jefe = req.body.emp_id_jefe
     id_area = req.body.id_area
@@ -272,67 +288,87 @@ controller.alta_empleado_subarea_POST = (req, res) => {
 }
 
 
+controller.alta_empleado_puesto_POST = (req, res) => {
 
-controller.alta_empleado_verificarEstacion_POST = (req, res) => {
+
     emp_id = req.body.emp_id
     emp_id_jefe = req.body.emp_id_jefe
     id_area = req.body.id_area
-    id_subarea = req.body.id_subarea
     id_turno = req.body.id_turno
+    id_subarea = req.body.id_subarea
 
-
-
-
-    funcionA.estacionesPorSubarea(id_subarea, (req, estaciones) => {
-        if (estaciones.length > 1) {
-            res.render('alta_empleado_estacion.ejs', {
-                emp_id,
-                emp_id_jefe,
-                id_area,
-                id_subarea,
-                id_turno,
-                estaciones
-            })
-        } else {
-            funcionE.empleadosNombre(emp_id, (err, nombreEmpleado) => {
-                funcionA.areas((err, areas) => {
-                    funcionA.subareas((err, subareas) => {
-                        funcionA.estaciones((err, estaciones) => {
-                            funcionA.turnos((err, turnos) => {
-
-
-
-
-                                id_estacion = null
-                                res.render('alta_empleado_verificacion.ejs', {
-                                    emp_id,
-                                    emp_id_jefe,
-                                    id_area,
-                                    id_subarea,
-                                    id_estacion,
-                                    id_turno,
-                                    turnos,
-                                    areas,
-                                    subareas,
-                                    estaciones,
-                                    nombreEmpleado
-                                })
-                            })
-                        })
-                    })
-                })
-            })
-        }
+    funcionE.empleadosSearchPuestoPorArea(id_area, (err, puestos) => {
+        res.render('alta_empleado_puesto.ejs', {
+            emp_id,
+            emp_id_jefe,
+            id_area,
+            id_turno,
+            id_subarea,
+            puestos
+        })
     })
 }
+// controller.alta_empleado_verificarEstacion_POST = (req, res) => {
+//     emp_id = req.body.emp_id
+//     emp_id_jefe = req.body.emp_id_jefe
+//     id_area = req.body.id_area
+//     id_subarea = req.body.id_subarea
+//     id_turno = req.body.id_turno
+
+
+
+
+//     funcionA.estacionesPorSubarea(id_subarea, (req, estaciones) => {
+//         if (estaciones.length > 1) {
+//             res.render('alta_empleado_puesto.ejs', {
+//                 emp_id,
+//                 emp_id_jefe,
+//                 id_area,
+//                 id_subarea,
+//                 id_turno,
+//                 estaciones
+//             })
+//         } else {
+//             funcionE.empleadosNombre(emp_id, (err, nombreEmpleado) => {
+//                 funcionA.areas((err, areas) => {
+//                     funcionA.subareas((err, subareas) => {
+//                         funcionA.estaciones((err, estaciones) => {
+//                             funcionA.turnos((err, turnos) => {
+
+
+
+
+//                                 id_estacion = null
+//                                 res.render('alta_empleado_verificacion.ejs', {
+//                                     emp_id,
+//                                     emp_id_jefe,
+//                                     id_area,
+//                                     id_subarea,
+//                                     id_estacion,
+//                                     id_turno,
+//                                     turnos,
+//                                     areas,
+//                                     subareas,
+//                                     estaciones,
+//                                     nombreEmpleado
+//                                 })
+//                             })
+//                         })
+//                     })
+//                 })
+//             })
+//         }
+//     })
+// }
 
 controller.alta_empleado_verificacion_POST = (req, res) => {
     emp_id = req.body.emp_id
     emp_id_jefe = req.body.emp_id_jefe
     id_area = req.body.id_area
     id_subarea = req.body.id_subarea
-    id_estacion = req.body.id_estacion
+    id_puesto = req.body.id_puesto
     id_turno = req.body.id_turno
+
 
 
 
@@ -340,18 +376,18 @@ controller.alta_empleado_verificacion_POST = (req, res) => {
     funcionE.empleadosNombre(emp_id, (err, nombreEmpleado) => {
         funcionA.areas((err, areas) => {
             funcionA.subareas((err, subareas) => {
-                funcionA.estaciones((err, estaciones) => {
+                funcionE.empleadosSearchPuestos((err, puestos) => {
                     funcionA.turnos((err, turnos) => {
                         res.render('alta_empleado_verificacion.ejs', {
                             emp_id,
                             emp_id_jefe,
                             id_area,
                             id_subarea,
-                            id_estacion,
+                            id_puesto,
                             id_turno,
                             areas,
                             subareas,
-                            estaciones,
+                            puestos,
                             turnos,
                             nombreEmpleado
                         })
@@ -368,39 +404,46 @@ controller.alta_empleado_POST = (req, res) => {
     emp_id_jefe = req.body.emp_id_jefe
     id_area = req.body.id_area
     id_subarea = req.body.id_subarea
-    id_estacion = req.body.id_estacion
-
-    // Si al dar de alta la estacion es nula entonces, se asigna valor 0 a la estacion
-    if (id_estacion == '') {
-        id_estacion = 0;
-
-        funcionE.empleadosUpdateSubordinado(emp_id, emp_id_jefe, (err, updated) => {
-            funcion.empleadosActualizarJefeCambiar(emp_id_jefe, (err, result00) => {
+    id_puesto = req.body.id_puesto
+    id_turno = req.body.id_turno
 
 
-                affectedRowTrue = updated.affectedRows
+    funcionE.empleadosUpdateSubordinado(emp_id, emp_id_jefe, (err, result) => {
+        funcion.empleadosActualizarJefeCambiar(emp_id_jefe, (err, result00) => {
 
-                if (affectedRowTrue == 1) {
+            if (err) throw err;
 
-                    funcionE.empleadosInsertArea(emp_id, emp_id_jefe, id_area, id_subarea, id_estacion, (err, result) => {
-                        funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
-                            funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
-                                funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
-                                    funcionA.areas((err, areas) => {
-                                        funcionA.subareas((err, subareas) => {
-                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
-                                                jefe = emp_id_jefe
-                                                funcionA.estaciones((err, estaciones) => {
+            affectedRowTrue = result.affectedRows
+
+
+            if (affectedRowTrue == 1) {
+
+                funcionE.empleadosInsertArea(emp_id, emp_id_jefe, id_area, id_subarea, id_puesto, id_turno, (err, result) => {
+
+
+
+
+                    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                                funcionA.areas((err, areas) => {
+                                    funcionE.empleadosSearchPuestos((err, puestos) => {
+                                        funcionA.turnos((err, turnos) => {
+                                            funcionA.subareas((err, subareas) => {
+                                                funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                                    jefe = emp_id_jefe
+
+
 
 
                                                     funcionE.SearchempleadoArea(emp_id, (err, areaEmpleado) => {
-                                                        id_turno = areaEmpleado[0].turno
+                                                        id_turno = areaEmpleado[0].id_turno
                                                         id_area = areaEmpleado[0].id_area
                                                         id_subarea = areaEmpleado[0].id_subarea
-                                                        id_estacion = areaEmpleado[0].id_estacion
+                                                        id_puesto = areaEmpleado[0].id_puesto
                                                         his_movimiento = "Alta"
 
-                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion, (err, result) => {
+                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_puesto, (err, result) => {
 
                                                             res.render('alta_empleados.ejs', {
                                                                 jefe,
@@ -410,7 +453,8 @@ controller.alta_empleado_POST = (req, res) => {
                                                                 data5: "hidden",
                                                                 areas,
                                                                 subareas,
-                                                                estaciones,
+                                                                puestos,
+                                                                turnos,
                                                                 areaPorEmpleado
                                                             })
                                                         })
@@ -423,27 +467,31 @@ controller.alta_empleado_POST = (req, res) => {
                             })
                         })
                     })
-                } else {
-                    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
-                        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
-                            funcionE.empleadosJefe(emp_id, (err, result4) => {
-                                funcionE.empleadosNombre(result4[0].emp_id_jefe, (err, nombreJefe) => {
-
-                                    funcionA.areas((err, areas) => {
-                                        funcionA.subareas((err, subareas) => {
-                                            funcionA.estaciones((err, estaciones) => {
+                })
+            } else {
+                funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
+                    funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
+                        funcionE.empleadosJefe(emp_id, (err, result4) => {
+                            funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
+                                funcionA.areas((err, areas) => {
+                                    funcionE.empleadosSearchPuestos((err, puestos) => {
+                                        funcionA.turnos((err, turnos) => {
+                                            funcionA.subareas((err, subareas) => {
                                                 funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
                                                     jefe = emp_id_jefe
 
 
+
                                                     funcionE.SearchempleadoArea(emp_id, (err, areaEmpleado) => {
-                                                        id_turno = areaEmpleado[0].turno
+
+
+                                                        id_turno = areaEmpleado[0].id_turno
                                                         id_area = areaEmpleado[0].id_area
                                                         id_subarea = areaEmpleado[0].id_subarea
-                                                        id_estacion = areaEmpleado[0].id_estacion
+                                                        id_puesto = areaEmpleado[0].id_puesto
                                                         his_movimiento = "Alta"
 
-                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion, (err, result) => {
+                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_puesto, (err, result) => {
 
                                                             res.render('alta_empleados.ejs', {
                                                                 jefe,
@@ -453,7 +501,8 @@ controller.alta_empleado_POST = (req, res) => {
                                                                 data5: "null",
                                                                 areas,
                                                                 subareas,
-                                                                estaciones,
+                                                                puestos,
+                                                                turnos,
                                                                 areaPorEmpleado
                                                             })
                                                         })
@@ -466,110 +515,13 @@ controller.alta_empleado_POST = (req, res) => {
                             })
                         })
                     })
-                }
-            })
+                })
+            }
         })
-    } else {
-        funcionE.empleadosUpdateSubordinado(emp_id, emp_id_jefe, (err, result) => {
-            funcion.empleadosActualizarJefeCambiar(emp_id_jefe, (err, result00) => {
-                if (err) throw err;
+    })
 
-                affectedRowTrue = result.affectedRows
-
-                if (affectedRowTrue == 1) {
-
-                    funcionE.empleadosInsertArea(emp_id, emp_id_jefe, id_area, id_subarea, id_estacion, (err, result) => {
-
-
-                        funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
-                            funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
-                                funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
-                                    funcionA.areas((err, areas) => {
-                                        funcionA.subareas((err, subareas) => {
-                                            funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
-                                                jefe = emp_id_jefe
-
-                                                funcionA.estaciones((err, estaciones) => {
-
-
-                                                    funcionE.SearchempleadoArea(emp_id, (err, areaEmpleado) => {
-                                                        id_turno = areaEmpleado[0].turno
-                                                        id_area = areaEmpleado[0].id_area
-                                                        id_subarea = areaEmpleado[0].id_subarea
-                                                        id_estacion = areaEmpleado[0].id_estacion
-                                                        his_movimiento = "Alta"
-
-                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion, (err, result) => {
-
-                                                            res.render('alta_empleados.ejs', {
-                                                                jefe,
-                                                                empleados,
-                                                                empleadosPorJefe,
-                                                                data4: nombreJefe,
-                                                                data5: "hidden",
-                                                                areas,
-                                                                subareas,
-                                                                estaciones,
-                                                                areaPorEmpleado
-                                                            })
-                                                        })
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                } else {
-                    funcionE.empleadosDiferenteDeOrigininador(emp_id_jefe, (err, empleados) => {
-                        funcionE.empleadosPorJefe(emp_id_jefe, (err, empleadosPorJefe) => {
-                            funcionE.empleadosJefe(emp_id, (err, result4) => {
-                                funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
-                                    funcionA.areas((err, areas) => {
-                                        funcionA.subareas((err, subareas) => {
-                                            funcionA.estaciones((err, estaciones) => {
-                                                funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
-                                                    jefe = emp_id_jefe
-
-
-
-                                                    funcionE.SearchempleadoArea(emp_id, (err, areaEmpleado) => {
-                                                        id_turno = areaEmpleado[0].turno
-                                                        id_area = areaEmpleado[0].id_area
-                                                        id_subarea = areaEmpleado[0].id_subarea
-                                                        id_estacion = areaEmpleado[0].id_estacion
-                                                        his_movimiento = "Alta"
-
-                                                        funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion, (err, result) => {
-
-                                                            res.render('alta_empleados.ejs', {
-                                                                jefe,
-                                                                empleados,
-                                                                empleadosPorJefe,
-                                                                data4: nombreJefe,
-                                                                data5: "null",
-                                                                areas,
-                                                                subareas,
-                                                                estaciones,
-                                                                areaPorEmpleado
-                                                            })
-                                                        })
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                }
-            })
-        })
-    }
 }
+
 
 controller.borrar_empleado_POST = (req, res) => {
 
@@ -578,15 +530,16 @@ controller.borrar_empleado_POST = (req, res) => {
     emp_id_jefe = req.body.emp_id_jefe
 
     funcionE.SearchempleadoArea(emp_id, (err, areaEmpleado) => {
-        id_turno = areaEmpleado[0].turno
+        id_turno = areaEmpleado[0].id_turno
         id_area = areaEmpleado[0].id_area
         id_subarea = areaEmpleado[0].id_subarea
-        id_estacion = areaEmpleado[0].id_estacion
+        id_puesto = areaEmpleado[0].id_puesto
         his_movimiento = "Baja"
         funcionE.empleadosBorrarJefe(emp_id, (err, result) => {
             funcion.empleadosActualizarJefeBorrar(emp_id, (err, result) => {
 
-                funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion, (err, result) => {
+                funcionE.empleadosInsertHistorial(his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_puesto, (err, result) => {
+                    console.log(err);
 
                     funcionE.empleadosBorrarAreaEmpleado(emp_id, (err, result) => {
 
@@ -997,7 +950,12 @@ controller.reporte_mensual_POST = (req, res) => {
     cap_mes_final = cap_mes_inicial
     cap_año = yearSelected
 
-    fecha = { cap_año, cap_mes_inicial, cap_dia_inicio, cap_dia_final }
+    fecha = {
+        cap_año,
+        cap_mes_inicial,
+        cap_dia_inicio,
+        cap_dia_final
+    }
 
 
     funcion.SearchCaptura_Faltante(emp_id_jefe, (err, captura_faltante) => {

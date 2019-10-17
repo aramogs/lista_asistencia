@@ -135,16 +135,17 @@ funcionE.empleadosBorrarAreaEmpleado = (emp_id,callback)=>{
     })
 }
 
-funcionE.empleadosInsertArea = (id_emp, emp_id_jefe,id_area,id_subarea,id_estacion, callback) => {
+funcionE.empleadosInsertArea = (id_emp, emp_id_jefe,id_area,id_subarea,id_puesto, id_turno, callback) => {
 
     dbE.query(`
-    INSERT INTO del_emparea (id_emp, emp_id_jefe, id_area, id_subarea, id_estacion)
-    VALUES(${id_emp}, ${emp_id_jefe}, ${id_area},${id_subarea},${id_estacion}) 
+    INSERT INTO del_emparea (id_emp, emp_id_jefe, id_area, id_subarea, id_puesto ,id_turno)
+    VALUES(${id_emp}, ${emp_id_jefe}, ${id_area},${id_subarea},${id_puesto} ,${id_turno}) 
     ON DUPLICATE KEY UPDATE 
         emp_id_jefe = ${emp_id_jefe},
         id_area = ${id_area},
         id_subarea = ${id_subarea},
-        id_estacion = ${id_estacion}
+        id_puesto = ${id_puesto},
+        id_turno = ${id_turno}
     `,
         function (err, result, fields) {
             if (err) {
@@ -168,11 +169,11 @@ funcionE.SearchempleadoArea = (emp_id, callback) => {
     })
 }
 
-funcionE.empleadosInsertHistorial = (his_movimiento,emp_id_jefe, emp_id, id_turno,id_area,id_subarea,id_estacion, callback) => {
+funcionE.empleadosInsertHistorial = (his_movimiento,emp_id_jefe, emp_id, id_turno,id_area,id_subarea,id_puesto, callback) => {
 
     dbE.query(`
-    INSERT INTO del_historial_movimientos (his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_estacion,fecha_captura)
-    VALUES('${his_movimiento}', ${emp_id_jefe}, ${emp_id}, ${id_turno}, ${id_area},${id_subarea},${id_estacion},NOW()) 
+    INSERT INTO del_historial_movimientos (his_movimiento, emp_id_jefe, emp_id, id_turno, id_area, id_subarea, id_puesto,fecha_captura)
+    VALUES('${his_movimiento}', ${emp_id_jefe}, ${emp_id}, ${id_turno}, ${id_area},${id_subarea},${id_puesto},NOW()) 
     `,
         function (err, result, fields) {
             if (err) {
@@ -190,7 +191,7 @@ funcionE.empleadosInsertHistorial = (his_movimiento,emp_id_jefe, emp_id, id_turn
 funcionE.empleadosSearchArea = (id_emp, callback) => {
 
     dbE.query(`
-    SELECT * FROM del_emparea WHERE emp_id_jefe = ${id_emp} 
+    SELECT * FROM del_emparea WHERE emp_id_jefe = ${id_emp} ORDER BY id_turno
     `,
         function (err, result, fields) {
             if (err) {
@@ -204,4 +205,37 @@ funcionE.empleadosSearchArea = (id_emp, callback) => {
         })
 }
 
+funcionE.empleadosSearchPuestoPorArea = ( id_area, callback) => {
+
+    dbE.query(`
+    SELECT * FROM del_puestos WHERE id_area = ${id_area}
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+funcionE.empleadosSearchPuestos = ( callback) => {
+
+    dbE.query(`
+    SELECT * FROM del_puestos 
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
 module.exports = funcionE;
