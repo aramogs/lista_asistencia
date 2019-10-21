@@ -551,21 +551,25 @@ controller.borrar_empleado_POST = (req, res) => {
                                 funcionE.empleadosJefe(emp_id_jefe, (err, result4) => {
                                     funcionE.empleadosNombre(emp_id_jefe, (err, nombreJefe) => {
                                         funcionA.areas((err, areas) => {
-                                            funcionA.subareas((err, subareas) => {
-                                                funcionA.estaciones((err, estaciones) => {
-                                                    funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
-                                                        jefe = emp_id_jefe
+                                            funcionE.empleadosSearchPuestos((err, puestos) => {
+                                                funcionA.turnos((err, turnos) => {
+                                                    funcionA.subareas((err, subareas) => {
 
-                                                        res.render('alta_empleados.ejs', {
-                                                            jefe,
-                                                            empleados,
-                                                            empleadosPorJefe,
-                                                            data4: nombreJefe,
-                                                            data5: "hidden",
-                                                            areas,
-                                                            subareas,
-                                                            estaciones,
-                                                            areaPorEmpleado
+                                                        funcionE.empleadosSearchArea(emp_id_jefe, (err, areaPorEmpleado) => {
+                                                            jefe = emp_id_jefe
+
+                                                            res.render('alta_empleados.ejs', {
+                                                                jefe,
+                                                                empleados,
+                                                                empleadosPorJefe,
+                                                                data4: nombreJefe,
+                                                                data5: "hidden",
+                                                                areas,
+                                                                subareas,
+                                                                puestos,
+                                                                turnos,
+                                                                areaPorEmpleado
+                                                            })
                                                         })
                                                     })
                                                 })
@@ -1181,14 +1185,14 @@ controller.reporte_general_GET = (req, res) => {
                     funcionA.areas((err, areas) => {
                         funcionA.subareas((err, subareas) => {
                             console.table(emparea);
-                            
-                                res.render('reporte_general.ejs', {
-                                    motivo_falta,
-                                    empleados,
-                                    captura_general,
-                                    emparea,
-                                    areas,
-                                    subareas
+
+                            res.render('reporte_general.ejs', {
+                                motivo_falta,
+                                empleados,
+                                captura_general,
+                                emparea,
+                                areas,
+                                subareas
                             })
                         })
                     })
