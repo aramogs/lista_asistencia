@@ -116,49 +116,27 @@
 <% include ./static/footer %>
 </body>
 <script>
-    < %
-    let arreglo = [] % >
-        <
-        %
-        let motivos = {} % >
+    <% let arreglo = [] %>
+    <% let motivos = {} %>
 
 
-            <
-            %
-            for (let i = 0; i < motivo_falta.length; i++) {
-                % >
-                <
-                %
-                for (let y = 0; y < captura.length; y++) {
-                    % >
-                    <
-                    %
-                    if (motivo_falta[i].id_motivo == captura[y].motivo_falta) {
-                        % >
-                        <
-                        % arreglo.push(motivo_falta[i].motivo_descripcion) % >
-                            <
-                            %
-                    } % >
-                    <
-                    %
-                } % >
-                <
-                %
-            } % >
+            <% for (let i = 0; i < motivo_falta.length; i++) {%>
+                <% for (let y = 0; y < captura.length; y++) {%>
+                    <% if (motivo_falta[i].id_motivo == captura[y].motivo_falta) {%>
+                        <% arreglo.push(motivo_falta[i].motivo_descripcion) %>
+                            <%} %>
+                    <% } %>
+                <% } %>
 
 
-            <
-            % arreglo.forEach(function (x) {
+            <% arreglo.forEach(function (x) {
                 motivos[x] = (motivos[x] || 0) + 1;
-            }); % >
+            }); %>
 
 
-    labels = []
+                labels =[]
     data = []
-    motivos = < % -JSON.stringify(motivos) % > ;
-
-    console.log(motivos)
+    motivos = <%-JSON.stringify(motivos) %> ;
     labels.push(Object.keys(motivos))
     data.push(Object.values(motivos))
 
@@ -171,7 +149,7 @@
             labels: ['Justified', 'Unjustified'],
             datasets: [{
                 label: '',
-                data: [ < %= faltas_justificadas % > , < %= faltas_injustificadas % > , 1, ],
+                data: [ <%= faltas_justificadas %> , <%= faltas_injustificadas %> , 1,],
                 backgroundColor: [
                     'rgba(  55, 133, 252  , 1)',
                     'rgba( 243, 252, 55 , 1)',
