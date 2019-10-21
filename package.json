@@ -2,10 +2,10 @@
   "name": "lista_asistencia",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "la.js",
   "scripts": {
-    "start": "nodemon app",
-    "dev": "nodemon app"
+    "start": "nodemon la",
+    "dev": "nodemon la"
   },
   "keywords": [],
   "author": "",
