@@ -30,6 +30,7 @@ router.get('/seleccionar_mes', routesController.seleccionar_mes_GET);
 router.post('/reporte_mensual', routesController.reporte_mensual_POST);
 router.get('/select_year', routesController.select_year_GET);
 router.post('/reporte_anual', routesController.reporte_anual_POST);
+router.get('/reporte_general', routesController.reporte_general_GET);
 router.get('*', (req, res) => {
   res.send('404 Page not found');
 });

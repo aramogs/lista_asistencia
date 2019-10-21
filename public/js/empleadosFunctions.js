@@ -238,4 +238,22 @@ funcionE.empleadosSearchPuestos = ( callback) => {
             }
         })
 }
+
+
+funcionE.SearchEmpArea = (callback) => {
+
+    dbE.query(`
+    SELECT * FROM del_emparea 
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
 module.exports = funcionE;

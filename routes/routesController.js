@@ -1171,4 +1171,31 @@ controller.reporte_anual_POST = (req, res) => {
     })
 }
 
+controller.reporte_general_GET = (req, res) => {
+
+
+    funcion.SearchMotivoFaltas((err, motivo_falta) => {
+        funcionE.empleadosTodos((err, empleados) => {
+            funcion.SearchCaptura_General((err, captura_general) => {
+                funcionE.SearchEmpArea((err, emparea) => {
+                    funcionA.areas((err, areas) => {
+                        funcionA.subareas((err, subareas) => {
+                            console.table(emparea);
+                            
+                                res.render('reporte_general.ejs', {
+                                    motivo_falta,
+                                    empleados,
+                                    captura_general,
+                                    emparea,
+                                    areas,
+                                    subareas
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
+
 module.exports = controller;

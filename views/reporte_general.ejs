@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>emp_id</th>
+                <th>id_jefe</th>
+                <th>fecha</th>
+                <th>captura</th>
+                <th>motido_id</th>
+                <th>motivo_descripcion</th>
+                <th>area</th>
+                <th>subarea</th>
+                <th>turno</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%  for (let i = 0; i < captura_general.length; i++) { %>
+            <tr>
+                <td><%= captura_general[i].emp_id %></td>
+                <td><%= captura_general[i].emp_id_jefe %></td>
+                <td><%=  captura_general[i].cap_mes+"/"+captura_general[i].cap_dia+"/"+captura_general[i].cap_año %>
+                </td>
+                <td><%= captura_general[i].cap_captura %></td>
+                <td><%= captura_general[i].motivo_falta %></td>
+
+                <% let valor %>
+                <% existe=false %>
+                <%  for(let y = 0; y< motivo_falta.length; y++){ %>
+                <% if(captura_general[i].motivo_falta == motivo_falta[y].id_motivo){ %>
+                <% existe = true %>
+                <% valor=  motivo_falta[y].motivo_descripcion %>
+                <% break %>
+
+                <% } %>
+                <% } %>
+                <% if(existe == true){ %>
+                <td><%= valor %></td>
+                <% }else{ %>
+                <td></td>
+                <% } %>
+
+                <%  for(let x = 0; x< emparea.length; x++){ %>
+                <% if(captura_general[i].emp_id == emparea[x].id_emp){ %>
+
+                    <% existeArea = false %>   
+                    <% let valArea %>
+                <% for (let z = 0; z < areas.length; z++) { %>
+                <%  if(emparea[x].id_area == areas[z].id_area){ %>
+                    <% existeArea = true%>
+                    <%valArea = areas[z].area %>
+                    <% break %>
+                <% } %>
+                <% } %>
+                <% if(existeArea == true){ %>
+                    <td><%= valArea %></td>
+                    <% }else{ %>
+                        <td></td>
+                        <% } %>       
+                <% } %>
+                <% } %>
+
+                <%  for(let x = 0; x< emparea.length; x++){ %>
+                <% if(captura_general[i].emp_id == emparea[x].id_emp){ %>
+
+                <% for (let z = 0; z < subareas.length; z++) { %>
+                <%  if(emparea[x].id_subarea == subareas[z].id_subarea){ %>
+                <td><%= subareas[z].subarea %></td>
+                <% } %>
+                <% } %>
+
+                <% } %>
+                <% } %>
+
+                <%  for(let x = 0; x< emparea.length; x++){ %>
+                <% if(captura_general[i].emp_id == emparea[x].id_emp){ %>
+                <td><%= emparea[x].id_turno %></td>
+
+
+                <% } %>
+                <% } %>
+
+            </tr>
+
+            <% } %>
+        </tbody>
+    </table>
+
+</body>
+
+</html>

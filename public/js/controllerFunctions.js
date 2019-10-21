@@ -375,6 +375,23 @@ funcion.SearchCaptura_Anual = (emp_id_jefe, cap_año,callback)=>{
 }
 
 
+funcion.SearchCaptura_General = (callback)=>{
+    db.query(`
+    SELECT * FROM captura 
+    `,
+        function (err, result, fields) {
+            if (err) {
+
+                callback(err, null);
+
+            } else {
+
+                callback(null, result);
+            }
+        })
+}
+
+
 
 
 module.exports = funcion;
